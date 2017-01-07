@@ -10,7 +10,7 @@
 
 from collections import namedtuple
 
-mtypes = [
+category = [
     "Warframe",
     "Primary",
     "Secondary",
@@ -23,7 +23,7 @@ mtypes = [
 
 
 
-stypes = [
+subcat = [
     "Bows", "Blade_Whip",
     "Continuous", "Claws",
     "Dual", "Dual_Swords", "Dagger", "Dual_Dagger",
@@ -45,26 +45,30 @@ stypes = [
 
 
 
-WFConsts = namedtuple("WFConsts", ",".join(mtypes))
-WFSubtypes = namedtuple("WFSubtypes", ",".join(stypes))
+WFConsts = namedtuple("WFConsts", ",".join(category))
+WFSubtypes = namedtuple("WFSubtypes", ",".join(subcat))
 
 make_const = lambda x, y: x(*list(range(len(y))))
 
-group_consts = make_const(WFConsts, mtypes)
-sub_consts = make_const(WFSubtypes, stypes)
+group_consts = make_const(WFConsts, category)
+sub_consts = make_const(WFSubtypes, subcat)
 
 
-def i(etype, name, subtype):
+def i(etype, name, subtype, sourced=None):
     """Data semi-future proofing"""
     return dict(mtype=etype, name=name, stype=subtype, id="-1")
 
 #sub_consts.Rifles
 wfmastery_data = [
     i(group_consts.Primary, "Boltor", sub_consts.Rifle),
-    i(group_consts.Primary, "Boltor Prime", sub_consts.Rifle),
+    i(group_consts.Primary,
+      "Boltor Prime",
+      sub_consts.Rifle,
+      sourced=[]
+     ),
     i(group_consts.Primary, "Telos Boltor", sub_consts.Rifle),
     i(group_consts.Primary, "Braton", sub_consts.Rifle),
-    i(group_consts.Primary, "Braton MK1", sub_consts.Rifle),
+    i(group_consts.Primary, "MK1 Braton", sub_consts.Rifle),
     i(group_consts.Primary, "Braton Prime", sub_consts.Rifle),
     i(group_consts.Primary, "Braton Vandal", sub_consts.Rifle),
     i(group_consts.Primary, "Burston", sub_consts.Rifle),
@@ -100,7 +104,7 @@ wfmastery_data = [
     i(group_consts.Primary, "Tiberon", sub_consts.Rifle),
     #continuous
     i(group_consts.Primary, "Amprex", sub_consts.Rifle),
-    i(group_consts.Primary, "Flux sub_consts.Rifle", sub_consts.Rifle),
+    i(group_consts.Primary, "Flux Rifle", sub_consts.Rifle),
     i(group_consts.Primary, "Glaxion", sub_consts.Rifle),
     i(group_consts.Primary, "Ignis", sub_consts.Rifle),
     i(group_consts.Primary, "Quanta ", sub_consts.Rifle),
@@ -135,7 +139,7 @@ wfmastery_data = [
     i(group_consts.Primary, "Attica", sub_consts.Bows),
     i(group_consts.Primary, "Cernos", sub_consts.Bows),
     i(group_consts.Primary, "Cernos Prime", sub_consts.Bows),
-    i(group_consts.Primary, "Cernos Rakta", sub_consts.Bows),
+    i(group_consts.Primary, "Rakta Cernos", sub_consts.Bows),
     i(group_consts.Primary, "Daikyu", sub_consts.Bows),
     i(group_consts.Primary, "Dread", sub_consts.Bows),
     i(group_consts.Primary, "Mutalist Cernos", sub_consts.Bows),
@@ -176,7 +180,7 @@ wfmastery_data = [
     i(group_consts.Secondary, "Lex Prime", sub_consts.Single),
     i(group_consts.Secondary, "Magnus", sub_consts.Single),
     i(group_consts.Secondary, "Marelok", sub_consts.Single),
-    i(group_consts.Secondary, "Marelok Vaykor", sub_consts.Single),
+    i(group_consts.Secondary, "Vaykor Marelok", sub_consts.Single),
     i(group_consts.Secondary, "Seer", sub_consts.Single),
     i(group_consts.Secondary, "Sicarus", sub_consts.Single),
     i(group_consts.Secondary, "Sicarus Prime", sub_consts.Single),
@@ -444,8 +448,8 @@ wfmastery_data = [
 def index(raw_data):
     indexed = {}
     for pos, thing in enumerate(raw_data):
-        mtype_name = mtypes[thing["mtype"]]
-        stype_name = stypes[thing["stype"]]
+        mtype_name = category[thing["mtype"]]
+        stype_name = subcat[thing["stype"]]
 
         if mtype_name not in indexed:
             indexed[mtype_name] = {}

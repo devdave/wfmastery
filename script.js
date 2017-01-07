@@ -1,10 +1,10 @@
 (function(){
     "strict";
 
-    function bindby(className, fn){
+    function bindby(type, className, fn){
         var elements = document.getElementsByClassName(className);
         for(var i = 0; i < elements.length; i++) {
-            elements[i].addEventListener("click", fn);
+            elements[i].addEventListener(type, fn);
         }
     }
 
@@ -14,7 +14,14 @@
             state,
             box,
             grocery,
-            el = event.currentTarget;
+            el = event.currentTarget,
+            current_time = Date.now();
+
+        if(down_since !== null) {
+            if(current_time - down_since > 1000) {
+                return;
+            }
+        }
 
         id = el.getAttribute("id");
         box = document.getElementsByName(id)[0];
@@ -30,6 +37,21 @@
         add2index(id);
         localStorage[id] = box.value;
 
+    }
+
+    var down_since = null;
+
+    function mousedown(evt){
+        console.log("yup");
+        down_since = Date.now();
+    }
+
+    function mouseup(evt) {
+        var current_time = Date.now(),
+            length = current_time - down_since;
+
+        console.log("nope", length);
+        down_since = null;
     }
 
     function flip_groceries(new_category) {
@@ -121,8 +143,12 @@
         var elements;
         manage_storage();
 
-        bindby("individual", clicked);
-        bindby("menu-option", menuclick);
+        bindby("click", "individual", clicked);
+        bindby("mousedown", "individual", mousedown);
+        bindby("mouseup", "individual", mouseup);
+
+        bindby("click", "menu-option", menuclick);
+
     }
 
     window.addEventListener("load", main);

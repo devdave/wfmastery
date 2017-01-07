@@ -23,6 +23,10 @@
     background: green;
 }
 
+.menu-option[data-active="Own"] {
+
+}
+
 .menu_tab {
     display: none;
 }

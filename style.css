@@ -1,0 +1,107 @@
+
+/*
+######################################
+#########Shit show 1##################
+######################################
+*/
+
+.menu {
+    list-style: none;
+}
+
+.menu-option {
+    display: inline-block;
+    border: outset black thin;
+    padding: 12px 14px 12px 14px;
+    font-size: 2em;
+    border-radius: 15px;
+    background-color: red;
+    cursor: pointer;
+}
+
+.menu-option[data-active="True"] {
+    background: green;
+}
+
+.menu_tab {
+    display: none;
+}
+
+.menu_tab[data-active="True"] {
+    display: block;
+}
+
+legend {
+    font-size: 2em;
+}
+
+label.subgroup {
+    font-size: 1.5em;
+}
+
+.individual {
+    font-size: 1.2em;
+}
+
+
+/*
+######################################
+#########Shit show 2##################
+######################################
+*/
+
+.menu_tab {
+    border-radius: 15px;
+}
+
+.type_box {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.subgroup_box {
+    border: inset thin black;
+    border-radius: 12px;
+    padding: 2px;
+}
+
+.subgroup {
+    background-color: lightgray;
+    display: flex;
+
+}
+
+.sgroup_box {
+    display: flex;
+    flex-flow: row wrap;
+    max-width: 14em;
+
+
+}
+
+.individual {
+    display: table-cell;
+    border: thin outset black;
+    border-radius: 15px;
+    padding: 4px 3px 0 3px;
+    height: 45px;
+    width: 4em;
+    text-align: center;
+    cursor: pointer;
+
+    background-color: red;
+    color: white;
+
+
+}
+
+.individual[data-state="True"] {
+    background-color: green;
+    color: white;
+}
+
+
+.individual_input {
+    display: none;
+}
+

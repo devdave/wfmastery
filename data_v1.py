@@ -458,6 +458,8 @@ def index(raw_data):
             indexed[mtype_name][stype_name] = []
 
         thing['id'] = "{0}{1:02d}{2:03d}".format(thing["mtype"], thing['stype'], pos)
+        #In process URL encoding
+        thing['position'] = pos
 
         indexed[mtype_name][stype_name].append(thing)
 

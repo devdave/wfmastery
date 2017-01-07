@@ -43,6 +43,8 @@ stypes = [
     "Energy", "Chem", "Tenno", "Bio"
 ]
 
+
+
 WFConsts = namedtuple("WFConsts", ",".join(mtypes))
 WFSubtypes = namedtuple("WFSubtypes", ",".join(stypes))
 
@@ -451,8 +453,10 @@ def index(raw_data):
         if stype_name not in indexed[mtype_name]:
             indexed[mtype_name][stype_name] = []
 
+        thing['id'] = "{0}{1:02d}{2:03d}".format(thing["mtype"], thing['stype'], pos)
+
         indexed[mtype_name][stype_name].append(thing)
-        thing['id'] = "{0:02d}{1:03d}{2:03d}".format(thing["mtype"], thing['stype'], pos)
+
 
     return indexed
 
@@ -461,4 +465,3 @@ indexed = index(wfmastery_data)
 
 debug = 1
 debug = debug + 2
-

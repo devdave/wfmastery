@@ -85,7 +85,7 @@ label.subgroup {
     border-radius: 15px;
     padding: 4px 3px 0 3px;
     height: 45px;
-    width: 4em;
+    width: 6em;
     text-align: center;
     cursor: pointer;
 
@@ -105,3 +105,25 @@ label.subgroup {
     display: none;
 }
 
+/*
+######################################
+###########Groceries##################
+######################################
+*/
+
+
+.grocery_item[data-state="True"] {
+    display: none;
+}
+
+.grocery_item[data-active="False"] {
+    display: none;
+}
+
+.grocery_item {
+    display: inline-block;
+    border: thin black solid;
+    margin: 1 0 1 2;
+    width: 16em;
+    font-size: 1.5em;
+}

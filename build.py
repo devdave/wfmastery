@@ -27,6 +27,22 @@ menu_item = """
             <li class="menu-option" id="menutab_{name}" data-active="{is_on}" data-dest="mtype_{name}">{name}</li>
 """
 
+
+grocery_item = """
+    <li
+        class="grocery_item"
+        id="grocery_{id}"
+        data-active="{is_on}"
+        data-state="False"
+        data-cat="{category}">{category} -
+            <a
+                href="http://warframe.wikia.com/wiki/{name}"
+                target="_blank"
+                >{name}</a>
+        </li>
+
+"""
+
 html_body = """
 <!doctype html>
 <html>
@@ -41,6 +57,11 @@ html_body = """
         </ul>
         <p>MR hell checklist</p>
         {body}
+
+        <h1>Grocery list</h1>
+        <ul id="groceries">
+            {grocery_body}
+        </ul>
     </body>
 </html>
 """
@@ -50,6 +71,7 @@ def main():
 
 
     group_html = ""
+    grocery_buffer = ""
 
     sorted_main_types = "Primary,Secondary,Melee,Dojo,Sentinel,Archwing".split(",")
     active_type = "Primary"
@@ -66,6 +88,14 @@ def main():
             item_html = item_element.format(**thing)
             sub_buffer += item_html
 
+            grocery_buffer += grocery_item.format(
+                category=d1.category[thing["mtype"]],
+                name=thing["name"],
+                is_on=d1.category[thing["mtype"]] == active_type,
+                id=thing['id']
+            )
+
+
         group_html += main_group.format(mtype_name=group_key, body=sub_buffer, is_on=group_key == active_type)
 
         # for stype in sorted(temp.keys()):
@@ -81,6 +111,8 @@ def main():
 
 
     menu_list = "\n".join([menu_item.format(name=x, is_on=sorted_main_types[0] == x) for x in sorted_main_types])
+
+    #Build grocery list
 
 
     with open("index.html", "w") as my_file:

@@ -10,19 +10,40 @@
 
 
     function clicked(event){
-        var id, state, box, el = event.currentTarget;
+        var id,
+            state,
+            box,
+            grocery,
+            el = event.currentTarget;
 
         id = el.getAttribute("id");
         box = document.getElementsByName(id)[0];
+        grocery = document.getElementById("grocery_"+id);
+
         state = el.getAttribute("data-state");
         state = state == "False" ? "True" : "False";
         box.value = state == "True" ? 1 : 0;
 
         el.setAttribute("data-state", state);
+        grocery.setAttribute("data-state", state);
 
         add2index(id);
         localStorage[id] = box.value;
 
+    }
+
+    function flip_groceries(new_category) {
+        var items;
+
+        items = document.getElementsByClassName("grocery_item");
+
+        for(let i = 0; i <items.length; i++) {
+            if(items[i].getAttribute("data-cat")==new_category){
+                items[i].setAttribute("data-active", "True");
+            } else {
+                items[i].setAttribute("data-active", "False");
+            }
+        }
     }
 
     function menuclick(evt){
@@ -43,6 +64,7 @@
             button.setAttribute("data-active", state);
             child_panel.setAttribute("data-active", state);
         }
+        flip_groceries(el.innerHTML);
     }
 
     function add2index(value){
@@ -56,7 +78,7 @@
 
     function manage_storage(){
 
-        var indexed, label, input, data_id;
+        var indexed, label, grocery, input, data_id, sflag, nflag;
 
         if(!localStorage.indexed){
             //We are done
@@ -69,6 +91,7 @@
                 data_id = indexed[i];
 
                 label = document.getElementById(data_id);
+                grocery = document.getElementById("grocery_" + data_id);
                 if(!label) {
                     continue;
                 }
@@ -78,12 +101,15 @@
 
 
                 if(localStorage[data_id] == "1"){
-                    label.setAttribute("data-state", "True");
-                    input.value = "1";
+                    sflag = "True";
+                    nflag = 1;
                 } else {
-                    label.setAttribute("data-state", "False");
-                    input.value = "0";
+                    sflag = "False";
+                    nflag = 0;
                 }
+                label.setAttribute("data-state", sflag);
+                grocery.setAttribute("data-state", sflag);
+                input.value = nflag;
             }
         }
 

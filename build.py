@@ -71,7 +71,7 @@ def main():
     menu_list = "\n".join([menu_item.format(name=x, is_on=sorted_main_types[0] == x) for x in sorted_main_types])
 
 
-    with open("checklist.html", "w") as my_file:
+    with open("index.html", "w") as my_file:
         my_file.write(html_body.format(body=group_html, menu_names=menu_list))
 
 

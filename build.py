@@ -73,7 +73,7 @@ def main():
     group_html = ""
     grocery_buffer = ""
 
-    sorted_main_types = "Primary,Secondary,Melee,Dojo,Sentinel,Archwing".split(",")
+    sorted_main_types = "Primary,Secondary,Melee,Sentinel,Dojo,Archwing".split(",")
     active_type = "Primary"
 
     for group_key in sorted_main_types:
@@ -116,7 +116,13 @@ def main():
 
 
     with open("index.html", "w") as my_file:
-        my_file.write(html_body.format(body=group_html, menu_names=menu_list))
+        my_file.write(
+            html_body.format(
+                body=group_html,
+                menu_names=menu_list,
+                grocery_body=grocery_buffer
+            )
+        )
 
 
 

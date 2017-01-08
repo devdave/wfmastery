@@ -6,7 +6,7 @@ import operator as OP
 
 item_element = """
             <label class="individual" id="{id}" data-id="{id}" data-state="False">{name}</label>
-            <input class="individual_input" name="{id}" type="checkbox" data-mtype="{mtype}" data-stype="{stype}" data-id="{id}" value=0>
+            <input class="individual_input" name="{id}" type="checkbox" data-category="{category}" data-subcategory="{subcategory}" data-id="{id}" value=0>
 """
 
 # item_line = """<span class="subgroup_box">
@@ -18,13 +18,13 @@ item_element = """
 item_line = """{body}"""
 
 main_group = """
-    <fieldset class="menu_tab" id="mtype_{mtype_name}" data-active="{is_on}">
-        <legend>{mtype_name}</legend>
+    <fieldset class="menu_tab" id="category_{category_name}" data-active="{is_on}">
+        <legend>{category_name}</legend>
         <span class="type_box">{body}</span>
     </fieldset>
 """
 menu_item = """
-            <li class="menu-option" id="menutab_{name}" data-active="{is_on}" data-dest="mtype_{name}">{name}</li>
+            <li class="menu-option" id="menutab_{name}" data-active="{is_on}" data-dest="category_{name}">{name}</li>
 """
 
 
@@ -89,25 +89,25 @@ def main():
             sub_buffer += item_html
 
             grocery_buffer += grocery_item.format(
-                category=d1.category[thing["mtype"]],
+                category=d1.category[thing["category"]],
                 name=thing["name"],
-                is_on=d1.category[thing["mtype"]] == active_type,
+                is_on=d1.category[thing["category"]] == active_type,
                 id=thing['id']
             )
 
 
-        group_html += main_group.format(mtype_name=group_key, body=sub_buffer, is_on=group_key == active_type)
+        group_html += main_group.format(category_name=group_key, body=sub_buffer, is_on=group_key == active_type)
 
-        # for stype in sorted(temp.keys()):
+        # for subcategory in sorted(temp.keys()):
         #     sub_buffer = ""
-        #     ordered = sorted(temp[stype], key=lambda x: x["name"])
+        #     ordered = sorted(temp[subcategory], key=lambda x: x["name"])
         #
         #     for thing in ordered:
         #         item_html = item_element.format(**thing)
         #         sub_buffer += item_html + "\n"
-        #     buffer += item_line.format(name=stype, body=sub_buffer) + "\n"
+        #     buffer += item_line.format(name=subcategory, body=sub_buffer) + "\n"
 
-        # group_html += main_group.format(mtype_name=group_key, body=buffer, is_on=group_key == active_type)
+        # group_html += main_group.format(category_name=group_key, body=buffer, is_on=group_key == active_type)
 
 
     menu_list = "\n".join([menu_item.format(name=x, is_on=sorted_main_types[0] == x) for x in sorted_main_types])

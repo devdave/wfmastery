@@ -184,7 +184,7 @@
 
             //label = document.getElementById(data_id);
             labels = document.querySelectorAll(`label[data-id='${data_id}']`)
-            grocery_items = document.querySelectorAll(`.grocery_item[data-id='${data_id}']`)
+            grocery_items = document.querySelectorAll(`.grocery_item[data-id='grocery_${data_id}']`)
 
             //grocery = document.getElementById("grocery_" + data_id);
             if(!labels || labels.length === 0) {
@@ -204,7 +204,7 @@
                 nflag = 0;
             }
             labels.forEach(x=>{x.setAttribute("data-state", sflag)});
-            grocery_items.forEach(x=>{x.setAttributes("data-state", sflag)});
+            grocery_items.forEach(x=>{x.setAttribute("data-state", sflag)});
             inputs.forEach(x=>{x.value=nflag});
             //label.setAttribute("data-state", sflag);
             //grocery.setAttribute("data-state", sflag);

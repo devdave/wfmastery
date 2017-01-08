@@ -115,15 +115,6 @@ label.subgroup {
 ######################################
 */
 
-
-.grocery_item[data-state="True"] {
-    display: none;
-}
-
-.grocery_item[data-active="False"] {
-    display: none;
-}
-
 .grocery_item {
     display: inline-block;
     border: thin black solid;
@@ -131,3 +122,14 @@ label.subgroup {
     width: 16em;
     font-size: 1.5em;
 }
+
+
+.grocery_item[data-active="False"] {
+    display: none;
+}
+
+.grocery_item[data-state="True"] {
+    display: none;
+}
+
+

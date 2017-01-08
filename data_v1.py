@@ -5,6 +5,9 @@
 
     Version: 1
     Dec 25th, 2016 ransack date
+
+    Version: 1.2
+        No change to order BUT this is now hand-edited :(
 """
 
 
@@ -33,6 +36,7 @@ subcat = [
     "Launchers",
     "Rifle", "Rapier",
     "Shotgun", "sniper", "Spearguns", "Sidearms", "Single", "Sword_Shield", "Sword", "Sparring",
+    "Shotgun", "Spearguns", "Sidearms", "Single", "Sword_Shield", "Sword", "Sparring",
     "Staff", "Scythe", "Sniper",
     "Tonfa", "Thrown",
     "Machete", "Melee",
@@ -55,8 +59,19 @@ sub_consts = make_const(WFSubtypes, subcat)
 
 
 def i(etype, name, subtype, sourced=None):
+def i(etype, name, subtype, **kwargs):
     """Data semi-future proofing"""
-    return dict(mtype=etype, name=name, stype=subtype, id="-1")
+    # sourced = kwargs.get("sourced", [])
+    is_dojo = kwargs.get("is_dojo", False)
+    is_prime = True if "prime" in name.lower() else False
+
+    return dict(category=etype,
+                name=name.strip(),
+                subcategory=subtype,
+                is_prime=is_prime,
+                id="-1",
+                is_dojo=is_dojo
+               )
 
 #sub_consts.Rifles
 wfmastery_data = [
@@ -64,7 +79,6 @@ wfmastery_data = [
     i(group_consts.Primary,
       "Boltor Prime",
       sub_consts.Rifle,
-      sourced=[]
      ),
     i(group_consts.Primary, "Telos Boltor", sub_consts.Rifle),
     i(group_consts.Primary, "Braton", sub_consts.Rifle),
@@ -446,25 +460,43 @@ wfmastery_data = [
 ]
 
 def index(raw_data):
-    indexed = {}
+    product = {}
+    dojo = {} #going to rely heavily on Python's by-ref here
     for pos, thing in enumerate(raw_data):
-        mtype_name = category[thing["mtype"]]
-        stype_name = subcat[thing["stype"]]
+        cat_name = category[thing["category"]]
+        #got that goddamn song in my head now
+        scat_name = subcat[thing["subcategory"]]
 
-        if mtype_name not in indexed:
-            indexed[mtype_name] = {}
 
-        if stype_name not in indexed[mtype_name]:
-            indexed[mtype_name][stype_name] = []
+        #could be refactored to defaultdict but meh?
+        if cat_name not in product:
+            product[cat_name] = {}
 
-        thing['id'] = "{0}{1:02d}{2:03d}".format(thing["mtype"], thing['stype'], pos)
+        if scat_name not in product[cat_name]:
+            product[cat_name][scat_name] = []
+
+        if cat_name != "Dojo":
+            thing['id'] = "{0}{1:02d}{2:03d}".format(thing["category"], thing['subcategory'], pos)
+            #Order SHOULD have dojo stuff at bottom but
+            #if something goes wrong then the index won't have the id set yet
+            if thing['is_dojo'] is True:
+                dojo[thing['name']] = thing
+
+        elif thing['category'] == group_consts.Dojo:
+            assert thing['name'] in dojo, "Assumption is incorrect, {} was hit ahead of time".format(thing)
+            thing['id'] = dojo[thing['name']]["id"]
+        else:
+            raise Exception("How did we get here? {}".format(thing))
+
+
+
         #In process URL encoding
         thing['position'] = pos
 
         indexed[mtype_name][stype_name].append(thing)
 
 
-    return indexed
+    return product
 
 
 indexed = index(wfmastery_data)

@@ -44,34 +44,8 @@ grocery_item = """
 
 """
 
-html_body = """
-<!doctype html>
-<html>
-    <head>
-        <title>MR hell - Remember this so you can find it in history search</title>
-        <link rel="stylesheet" type="text/css" href="./style.css">
-        <script src="./script.js"></script>
-    </head>
-    <body>
-        <ul class="menu">
-            {menu_names}
-        </ul>
-        <p>MR hell checklist</p>
-        {body}
-
-        <h1>Grocery list</h1>
-        <ul id="groceries">
-            {grocery_body}
-        </ul>
-    </body>
-    <script>
-        var wfmastery = {{}};
-        wfmastery.positions = {pos_data};
-        wfmastery.json_id2pos = {json_id2pos};
-    </script>
-</html>
-"""
-
+with open("views/index.html") as my_file:
+    html_body = my_file.read()
 
 def main():
 

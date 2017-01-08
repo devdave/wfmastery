@@ -1,2 +1,5 @@
 *.pyc
 ransack.py
+env/
+parse_wikia_primes.py
+ptest.html

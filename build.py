@@ -47,7 +47,7 @@ html_body = """
 <!doctype html>
 <html>
     <head>
-        <title>MR hell</title>
+        <title>MR hell - Remember this so you can find it in history search</title>
         <link rel="stylesheet" type="text/css" href="./style.css">
         <script src="./script.js"></script>
     </head>
@@ -63,6 +63,11 @@ html_body = """
             {grocery_body}
         </ul>
     </body>
+    <script>
+        var wfmastery = {{}};
+        wfmastery.positions = {pos_data};
+        wfmastery.json_id2pos = {json_id2pos};
+    </script>
 </html>
 """
 
@@ -114,13 +119,18 @@ def main():
 
     #Build grocery list
 
+    json_positions = json.dumps(d1.positions, indent=4, sort_keys=True)
+    json_id2pos = json.dumps(d1.id2position, indent=4, sort_keys=True)
+
 
     with open("index.html", "w") as my_file:
         my_file.write(
             html_body.format(
                 body=group_html,
                 menu_names=menu_list,
-                grocery_body=grocery_buffer
+                grocery_body=grocery_buffer,
+                pos_data=json_positions,
+                json_id2pos=json_id2pos
             )
         )
 

@@ -493,7 +493,7 @@ def index(raw_data):
         #In process URL encoding
         thing['position'] = pos
 
-        indexed[mtype_name][stype_name].append(thing)
+        product[cat_name][scat_name].append(thing)
 
 
     return product

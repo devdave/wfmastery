@@ -100,7 +100,7 @@
 
     function manage_storage(){
 
-        var indexed, label, grocery, input, data_id, sflag, nflag;
+        var indexed, labels, grocery_items, inputs, data_id, sflag, nflag;
 
         if(!localStorage.indexed){
             //We are done
@@ -112,26 +112,32 @@
             for (let i = 0; i < indexed.length; i++) {
                 data_id = indexed[i];
 
-                label = document.getElementById(data_id);
-                grocery = document.getElementById("grocery_" + data_id);
-                if(!label) {
+                //label = document.getElementById(data_id);
+                labels = document.querySelectorAll(`label[data-id='${data_id}']`)
+                grocery_items = document.querySelectorAll(`.grocery_item[id='${data_id}']`)
+
+                //grocery = document.getElementById("grocery_" + data_id);
+                if(!labels || labels.length === 0) {
                     continue;
                 }
 
-                input = document.getElementsByName(data_id)[0];
+                inputs = document.getElementsByName(data_id);
 
 
 
-                if(localStorage[data_id] == "1"){
-                    sflag = "True";
-                    nflag = 1;
+                if(localStorage[data_id] > 0){
+                    sflag = "True"; //Prep for mixed state: False, Partial, True seems alright but will need to figure out what Partial means
+                    nflag = localStorage[data_id];
                 } else {
                     sflag = "False";
                     nflag = 0;
                 }
-                label.setAttribute("data-state", sflag);
-                grocery.setAttribute("data-state", sflag);
-                input.value = nflag;
+                labels.forEach(x=>{x.setAttribute("data-state", sflag)});
+                grocery_items.forEach(x=>{x.setAttributes("data-state", sflag)});
+                inputs.forEach(x=>{x.value=nflag});
+                //label.setAttribute("data-state", sflag);
+                //grocery.setAttribute("data-state", sflag);
+                //input.value = nflag;
             }
         }
 

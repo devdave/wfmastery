@@ -3,6 +3,7 @@
 
 import data_v1 as d1
 import operator as OP
+import json
 
 item_element = """
             <label class="individual" id="{id}" data-id="{id}" data-state="False">{name}</label>
@@ -31,7 +32,7 @@ menu_item = """
 grocery_item = """
     <li
         class="grocery_item"
-        id="grocery_{id}"
+        data-id="grocery_{id}"
         data-active="{is_on}"
         data-state="False"
         data-cat="{category}">{category} -

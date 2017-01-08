@@ -464,6 +464,8 @@ wfmastery_data = [
 
 def index(raw_data):
     product = {}
+    position2id = {}
+    id2position = {}
     dojo = {} #going to rely heavily on Python's by-ref here
     for pos, thing in enumerate(raw_data):
         cat_name = category[thing["category"]]
@@ -485,6 +487,10 @@ def index(raw_data):
             if thing['is_dojo'] is True:
                 dojo[thing['name']] = thing
 
+            position2id[pos] = thing['id']
+            id2position[thing['id']] = pos
+
+
         elif thing['category'] == group_consts.Dojo:
             assert thing['name'] in dojo, "Assumption is incorrect, {} was hit ahead of time".format(thing)
             thing['id'] = dojo[thing['name']]["id"]
@@ -494,15 +500,16 @@ def index(raw_data):
 
 
         #In process URL encoding
+
         thing['position'] = pos
 
         product[cat_name][scat_name].append(thing)
 
 
-    return product
+    return product, position2id, id2position
 
 
-indexed = index(wfmastery_data)
+indexed, positions, id2position = index(wfmastery_data)
 
 debug = 1
 debug = debug + 2

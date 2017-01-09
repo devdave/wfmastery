@@ -103,6 +103,10 @@ label.subgroup {
     background-color: green;
     color: white;
 }
+.individual[data-state="Partial"] {
+    background-color: yellow;
+    color: black;
+}
 
 
 .individual_input {
@@ -131,5 +135,3 @@ label.subgroup {
 .grocery_item[data-state="True"] {
     display: none;
 }
-
-

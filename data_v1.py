@@ -450,7 +450,7 @@ wfmastery_data = [
     i(group_consts.Dojo, "Tonbo", sub_consts.Tenno),
     i(group_consts.Dojo, "Venka", sub_consts.Tenno),
     #Sentinels
-    i(group_consts.Sentinel, "Deth Machine sub_consts.Rifle", sub_consts.Rifle),
+    i(group_consts.Sentinel, "Deth Machine Rifle", sub_consts.Rifle),
     i(group_consts.Sentinel, "Laser Rifle", sub_consts.Rifle),
     i(group_consts.Sentinel, "Laser Rifle Prime", sub_consts.Rifle),
     i(group_consts.Sentinel, "Stinger", sub_consts.Rifle),

@@ -1,7 +1,18 @@
-(function(){
-    "strict";
+"use strict";
 
-    function bindby(type, className, fn){
+(function(){
+    "use strict";
+
+
+    var History_data = new Array(367).fill(0),
+        down_since = -1,
+        is_down = false;
+
+
+    function bindbyclass(type, className, fn){
+        /*
+            Connect a handler to a specific event
+        */
         var elements = document.getElementsByClassName(className);
         for(var i = 0; i < elements.length; i++) {
             elements[i].addEventListener(type, fn);
@@ -9,55 +20,106 @@
     }
 
 
-    function clicked(event) {
-        var id,
-            state,
-            box,
-            grocery,
-            el = event.currentTarget,
-            current_time = Date.now();
+    function change_attribute(data_id, str_flag, number_flag) {
+        /**
+            To avoid repeating myself over and over
+            consolidates changing all relevant elements by
+        */
+        var labels, grocery_items;
 
-        if(down_since !== null) {
-            if(current_time - down_since > 1000) {
-                return;
+        labels = document.querySelectorAll(`label[data-id='${data_id}']`);
+        grocery_items = document.querySelectorAll(`.grocery_item[data-id='grocery_${data_id}']`);
+
+
+        labels.forEach(x=>{x.setAttribute("data-state", str_flag);});
+        grocery_items.forEach(x=>{x.setAttribute("data-state", str_flag);});
+        //inputs.forEach(x=>{x.value=number_flag});
+    }
+
+
+    //function clicked(element) {
+    //    var data_id,
+    //        current_time = Date.now(),
+    //        str_flag, num_flag;
+    //
+    //    data_id = element.getAttribute("id");
+    //
+    //    str_flag = element.getAttribute("data-state");
+    //    str_flag = (str_flag == "False" ? "True" : "False");
+    //    num_flag = (str_flag == "True" ? 1 : 0);
+    //
+    //    change_attribute(data_id, str_flag, num_flag);
+    //
+    //    Storage.Set(data_id, num_flag);
+    //    History.update(data_id, num_flag, true);
+    //}
+
+
+    function mousedown(evt) {
+        var element = evt.currentTarget,
+            data_id = element.getAttribute("data-id"),
+            current_state = element.getAttribute("data-state"),
+            down_since;
+
+        is_down = true;
+
+        window.setTimeout(_=>{
+            checker(data_id, Date.now(), current_state, element);
+        }, 100);
+
+    }
+
+    function checker(data_id, down_since, current_state, element){
+        var length = Date.now() - down_since,
+            new_state = null,
+            num_flag = 0;
+
+        if(is_down === true) {
+            if(length >= 1000) {
+                switch(current_state) {
+                    case "True":
+                    case "False":
+                        new_state = "Partial";
+                        num_flag = 2;
+                        break;
+                    default:
+                        new_state = "False";
+                        num_flag = 0;
+                        break;
+                }
+                is_down = false;
+            } else {
+                window.setTimeout(_=>{
+                    checker(data_id, down_since, current_state, element);
+                }, 100);
+            }
+        } else {
+            switch(current_state) {
+                case "Partial":
+                case "True":
+                    new_state = "False";
+                    num_flag = 0;
+                    break;
+                default:
+                    new_state = "True";
+                    num_flag = 1;
             }
         }
 
-        id = el.getAttribute("id");
-        box = document.getElementsByName(id)[0];
-        grocery = document.getElementById("grocery_"+id);
+        if(new_state !== null) {
+            change_attribute(data_id, new_state, num_flag);
+            Storage.Set(data_id, num_flag);
+            History.update(data_id, num_flag, true);
+        }
 
-        state = el.getAttribute("data-state");
-        state = state == "False" ? "True" : "False";
-        box.value = state == "True" ? 1 : 0;
-
-        el.setAttribute("data-state", state);
-        grocery.setAttribute("data-state", state);
-
-        add2index(id);
-        localStorage[id] = box.value;
-
-        update_history(id, box.value, true);
-
-
-    }
-
-    var down_since = null;
-
-    function mousedown(evt) {
-        console.log("yup");
-        down_since = Date.now();
     }
 
     function mouseup(evt) {
-        var current_time = Date.now(),
-            length = current_time - down_since;
-
-        console.log("nope", length);
-        down_since = null;
+        is_down = false;
+        down_since = -1;
     }
 
-    function flip_groceries(new_category) {
+    function show_or_hide_groceries(new_category) {
         var items;
 
         items = document.getElementsByClassName("grocery_item");
@@ -89,72 +151,126 @@
             button.setAttribute("data-active", state);
             child_panel.setAttribute("data-active", state);
         }
-        flip_groceries(el.innerHTML);
+        show_or_hide_groceries(el.innerHTML);
     }
 
-    function add2index(value) {
-        var indexed = new Set(localStorage.indexed.split(","));
-        //convoluted but it works, I guess
-        indexed.add(value);
-        indexed.delete("");
 
-        localStorage.indexed = Array.from(indexed).toString();
-    }
+    class Storage {
 
-    var history_data = Array(367).fill(0);
 
-    function update_history(id, value, push=false) {
-        var position = wfmastery.json_id2pos[id];
-        history_data[position] = value;
-
-        if(push===true){
-            push_history();
-        }
-    }
-
-    function get_history() {
-        var hash = window.location.hash.slice(1).split(","),
-            version, state;
-
-        for(let i of hash){
-            if(i.startsWith("version")){
-                version=i.split("=")[1];
+        static Index_as_string(){
+            if(window.localStorage.indexed === undefined){
+                window.localStorage.indexed = [];
             }
-            else if(i.startsWith("state")){
-                state=i.split("=")[1];
+
+            return window.localStorage.indexed;
+        }
+
+        static Index_as_array(){
+            var temp;
+
+            temp = Storage.Index_as_string().split(",");
+            if(temp.length > 0 && temp[0] === "") {
+                //note this is really starting to piss me off
+                temp.shift();
             }
+            return temp;
+
         }
-        return [version, state];
+
+        static Index_as_set() {
+            return new Set(Storage.Index_as_array());
+        }
+
+        static Set(identifier, value) {
+            var add2index = false,
+                index = Storage.Index_as_set();
+
+            index.add(identifier);
+            window.localStorage.indexed = [...index].toString();
+
+            window.localStorage[identifier] = value;
+        }
+
+        static Get(identifier) {
+            return window.localStorage[identifier];
+        }
+
+
 
     }
 
-    function push_history() {
-        var hist_str = history_data.join("");
-        history.pushState(null, null, `#version=1,state=${hist_str}`);
+
+    class History {
+        //Generally URLS have a 1024 character limit, some browsers go up
+        // much higher but assuming 1024 is probably safest.
+        // So to store history data the hash history tag is formated like
+        // #version={version},flags=(a 366 digit long string of 0-1's)
+
+
+
+        static setup(){
+            History_data = new Array(367).fill(0);
+        }
+
+        static update(id, value, push=false){
+            var position = wfmastery.json_id2pos[id];
+            History_data[position] = value;
+
+            if(push===true){
+                History.push();
+            }
+
+        }
+
+        static check() {
+            //Should only be called if localStorage is empty.
+            var indexed, version_st, version_str, history_str, history_arr;
+
+            [version_str, history_str] = History.get();
+
+            if(!version_str || !history_str){
+                return false;
+            }
+
+            history_arr = history_str.split("");
+
+            indexed = [];
+            for(let position = 0; position < history_arr.length; position++){
+                Storage.Set(wfmastery.positions[position], history_arr[position]);
+            }
+
+            return true;
+        }
+
+        static get() {
+            var hash, version, state;
+
+            hash = window.location.hash.slice(1).split(",");
+
+            for(let i of hash){
+                if(i.startsWith("version")){
+                    version=i.split("=")[1];
+                }
+                else if(i.startsWith("state")){
+                    state=i.split("=")[1];
+                }
+            }
+            return [version, state];
+        }
+
+        static push() {
+            var hist_str;
+            hist_str = History_data.join("");
+            window.history.pushState(null, null, `#version=1,state=${hist_str}`);
+        }
+
     }
 
-    function check_history() {
-        //Should only be called if localStorage is empty.
-        [version_str, history_str] = get_history();
 
-        if(!version_str || !history_str){
-            return false;
-        }
-        history_data = history_str.split("");
-        indexed = new Array();//TODO make that number a global const or something
-        for(let position = 0; position < history_data.length; position++){
-            indexed.concat(wfmastery.positions[position])
-            localStorage[wfmastery.positions[position]] = history_data[position];
-        }
-        localStorage.indexed = indexed;
+    function reload(){
 
-        return true;
-
-    }
-
-    function manage_storage(){
-
-        var indexed,
+        var index,
             labels,
             grocery_items,
             inputs,
@@ -163,56 +279,53 @@
             nflag,
             version_str, history_str; //I am somewhat proud of this abomination
 
-            //Generally URLS have a 1024 character limit, some browsers go up
-            // much higher but assuming 1024 is probably safest.
-            // So to store history data the hash history tag is formated like
-            // #version={version},flags=(a 366 digit long string of 0-1's)
 
-        if(!localStorage.indexed){
+        index = Storage.Index_as_array();
+
+
+        if(index.length === 0){
             //We are done
-            localStorage.indexed = "";
-            if(check_history() !== true) {
+            if(History.check() !== true) {
                 return;
             }
         }
 
 
-        indexed = localStorage.indexed.split(",");
 
-        for (let i = 0; i < indexed.length; i++) {
-            data_id = indexed[i];
 
-            //label = document.getElementById(data_id);
-            labels = document.querySelectorAll(`label[data-id='${data_id}']`)
-            grocery_items = document.querySelectorAll(`.grocery_item[data-id='grocery_${data_id}']`)
+        for (let i = 0; i < index.length; i++) {
+            data_id = index[i];
 
-            //grocery = document.getElementById("grocery_" + data_id);
+            labels = document.querySelectorAll(`label[data-id='${data_id}']`);
+
             if(!labels || labels.length === 0) {
                 continue;
             }
 
-            inputs = document.getElementsByName(data_id);
+            nflag = Storage.Get(data_id);
 
-
-
-            if(localStorage[data_id] > 0){
-                sflag = "True"; //Prep for mixed state: False, Partial, True seems alright but will need to figure out what Partial means
-                nflag = localStorage[data_id];
-                update_history(data_id, localStorage[data_id]);
-            } else {
-                sflag = "False";
+            if(nflag === null) {
                 nflag = 0;
+                History.set(data_id, nflag);
             }
-            labels.forEach(x=>{x.setAttribute("data-state", sflag)});
-            grocery_items.forEach(x=>{x.setAttribute("data-state", sflag)});
-            inputs.forEach(x=>{x.value=nflag});
-            //label.setAttribute("data-state", sflag);
-            //grocery.setAttribute("data-state", sflag);
-            //input.value = nflag;
+
+            switch(nflag) {
+                case "1":
+                case 1:
+                    sflag="True";
+                    break;
+                case "2":
+                case 2:
+                    sflag="Partial";
+                    break;
+                default:
+                    sflag="False";
+                    break;
+            }
+
+            change_attribute(data_id, sflag, nflag);
+
         }
-
-        push_history();
-
 
     }
 
@@ -220,18 +333,17 @@
 
     function main(){
         var elements;
-        manage_storage();
+        History.setup();
+        reload();
 
-        bindby("click", "individual", clicked);
-        bindby("mousedown", "individual", mousedown);
-        bindby("mouseup", "individual", mouseup);
-
-        bindby("click", "menu-option", menuclick);
-
-        console.log(get_history());
+        //bindbyclass("click", "individual", clicked);
+        bindbyclass("mousedown", "individual", mousedown);
+        bindbyclass("mouseup", "individual", mouseup);
+        bindbyclass("click", "menu-option", menuclick);
 
     }
 
     window.addEventListener("load", main);
 
 })();
+

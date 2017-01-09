@@ -1,80 +1,155 @@
-"use strict";
 
-(function(){
-    "use strict";
+class StorageCls {
 
+    constructor (storage_src) {
+        this.src = storage_src;
+    }
 
-    var History_data = new Array(367).fill(0),
-        down_since = -1,
-        is_down = false;
-
-
-    function bindbyclass(type, className, fn){
-        /*
-            Connect a handler to a specific event
-        */
-        var elements = document.getElementsByClassName(className);
-        for(var i = 0; i < elements.length; i++) {
-            elements[i].addEventListener(type, fn);
+    index_as_string(){
+        if(this.src.indexed === undefined){
+            this.src.indexed = [];
         }
+
+        return this.src.indexed;
+    }
+
+    index_as_array(){
+        var temp;
+
+        temp = this.index_as_string().split(",");
+        if(temp.length > 0 && temp[0] === "") {
+            //note this is really starting to piss me off
+            temp.shift();
+        }
+        return temp;
+
+    }
+
+    index_as_set() {
+        return new Set(this.index_as_array());
+    }
+
+    set(identifier, value) {
+        var add2index = false,
+            index = this.index_as_set();
+
+        index.add(identifier);
+        this.src.indexed = [...index].toString();
+        this.src[identifier] = value;
+    }
+
+    get(identifier) {
+        return this.src[identifier];
     }
 
 
-    function change_attribute(data_id, str_flag, number_flag) {
-        /**
-            To avoid repeating myself over and over
-            consolidates changing all relevant elements by
-        */
-        var labels, grocery_items;
 
-        labels = document.querySelectorAll(`label[data-id='${data_id}']`);
-        grocery_items = document.querySelectorAll(`.grocery_item[data-id='grocery_${data_id}']`);
+}
 
 
-        labels.forEach(x=>{x.setAttribute("data-state", str_flag);});
-        grocery_items.forEach(x=>{x.setAttribute("data-state", str_flag);});
-        //inputs.forEach(x=>{x.value=number_flag});
+class HistoryCls {
+    //Generally URLS have a 1024 character limit, some browsers go up
+    // much higher but assuming 1024 is probably safest.
+    // So to store history data the hash history tag is formated like
+    // #version={version},flags=(a 366 digit long string of 0-1's)
+
+    constructor (master_data, history_size=367){
+        this.master = master_data;
+        this.data = new Array(history_size).fill(0);
     }
 
+    update(id, value, push=false){
+        var position = this.master.json_id2pos[id];
+        this.data[position] = value;
 
-    //function clicked(element) {
-    //    var data_id,
-    //        current_time = Date.now(),
-    //        str_flag, num_flag;
-    //
-    //    data_id = element.getAttribute("id");
-    //
-    //    str_flag = element.getAttribute("data-state");
-    //    str_flag = (str_flag == "False" ? "True" : "False");
-    //    num_flag = (str_flag == "True" ? 1 : 0);
-    //
-    //    change_attribute(data_id, str_flag, num_flag);
-    //
-    //    Storage.Set(data_id, num_flag);
-    //    History.update(data_id, num_flag, true);
-    //}
+        if(push===true){
+            this.push();
+        }
 
+    }
 
-    function mousedown(evt) {
+    check(storage) {
+        //Should only be called if localStorage is empty.
+        var indexed, version_st, version_str, history_str, history_arr;
+
+        [version_str, history_str] = this.get();
+
+        if(!version_str || !history_str){
+            return false;
+        }
+
+        history_arr = history_str.split("");
+
+        indexed = [];
+        for(let position = 0; position < history_arr.length; position++){
+            storage.set(this.master.positions[position], history_arr[position]);
+        }
+
+        return true;
+    }
+
+    get() {
+        var hash, version, state;
+
+        hash = window.location.hash.slice(1).split(",");
+
+        for(let i of hash){
+            if(i.startsWith("version")){
+                version=i.split("=")[1];
+            }
+            else if(i.startsWith("state")){
+                state=i.split("=")[1];
+            }
+        }
+        return [version, state];
+    }
+
+    push() {
+        var hist_str;
+        hist_str = this.data.join("");
+        window.history.pushState(null, null, `#version=1,state=${hist_str}`);
+    }
+
+}
+
+class ClickHandler {
+    constructor (app, history, storage){
+        this.app = app;
+        this.history = history;
+        this.storage = storage;
+        this.is_down = false;
+    }
+
+    down(evt) {
+
         var element = evt.currentTarget,
             data_id = element.getAttribute("data-id"),
-            current_state = element.getAttribute("data-state"),
-            down_since;
+            current_state = element.getAttribute("data-state");
 
-        is_down = true;
+        if(evt.button !== 0) {
+            console.log(evt.button);
+            return;
+        }
+
+        this.is_down = true;
 
         window.setTimeout(_=>{
-            checker(data_id, Date.now(), current_state, element);
+            this.checker(data_id, Date.now(), current_state, element);
         }, 100);
 
     }
 
-    function checker(data_id, down_since, current_state, element){
+    up(evt) {
+        this.is_down = false;
+    }
+
+
+    checker(data_id, down_since, current_state, element){
         var length = Date.now() - down_since,
             new_state = null,
             num_flag = 0;
 
-        if(is_down === true) {
+        if(this.is_down === true) {
             if(length >= 1000) {
                 switch(current_state) {
                     case "True":
@@ -87,10 +162,10 @@
                         num_flag = 0;
                         break;
                 }
-                is_down = false;
+                this.is_down = false;
             } else {
                 window.setTimeout(_=>{
-                    checker(data_id, down_since, current_state, element);
+                    this.checker(data_id, down_since, current_state, element);
                 }, 100);
             }
         } else {
@@ -107,30 +182,67 @@
         }
 
         if(new_state !== null) {
-            change_attribute(data_id, new_state, num_flag);
-            Storage.Set(data_id, num_flag);
-            History.update(data_id, num_flag, true);
+            this.app.change_attribute(data_id, new_state, num_flag);
+            this.storage.set(data_id, num_flag);
+            this.history.update(data_id, num_flag, true);
         }
+    }
+}
+
+
+(function(){
+    "use strict";
+
+
+    //var history, storage,
+    //    down_since = -1,
+    //    is_down = false;
+
+
+    function bindbyclass(type, className, fn){
+        /*
+            Connect a handler to a specific event
+        */
+        var elements = document.getElementsByClassName(className);
+        for(var i = 0; i < elements.length; i++) {
+            elements[i].addEventListener(type, fn);
+        }
+    }
+
+
+    function change_attribute(data_id, str_flag, number_flag) {
+        /**
+            To avoid repeating myself over and over
+            consolidates changing all relevant elements
+        */
+        document
+            .querySelectorAll(`label[data-id='${data_id}']`)
+            .forEach(x=>{x.setAttribute("data-state", str_flag);});
+
+        document
+            .querySelectorAll(`.grocery_item[data-id='grocery_${data_id}']`)
+            .forEach(x=>{x.setAttribute("data-state", str_flag);});
 
     }
 
-    function mouseup(evt) {
-        is_down = false;
-        down_since = -1;
-    }
+
+
+
 
     function show_or_hide_groceries(new_category) {
-        var items;
 
-        items = document.getElementsByClassName("grocery_item");
 
-        for(let i = 0; i <items.length; i++) {
-            if(items[i].getAttribute("data-cat")==new_category){
-                items[i].setAttribute("data-active", "True");
-            } else {
-                items[i].setAttribute("data-active", "False");
-            }
-        }
+        document
+            .querySelectorAll(".grocery_item")
+            .forEach(x=>{
+                if(x.getAttribute("data-cat")==new_category) {
+                    x.setAttribute("data-active", "True");
+                }
+                else {
+                    x.setAttribute("data-active", "False");
+                }
+            });
+
     }
 
     function menuclick(evt) {
@@ -155,120 +267,7 @@
     }
 
 
-    class Storage {
-
-
-        static Index_as_string(){
-            if(window.localStorage.indexed === undefined){
-                window.localStorage.indexed = [];
-            }
-
-            return window.localStorage.indexed;
-        }
-
-        static Index_as_array(){
-            var temp;
-
-            temp = Storage.Index_as_string().split(",");
-            if(temp.length > 0 && temp[0] === "") {
-                //note this is really starting to piss me off
-                temp.shift();
-            }
-            return temp;
-
-        }
-
-        static Index_as_set() {
-            return new Set(Storage.Index_as_array());
-        }
-
-        static Set(identifier, value) {
-            var add2index = false,
-                index = Storage.Index_as_set();
-
-            index.add(identifier);
-            window.localStorage.indexed = [...index].toString();
-
-            window.localStorage[identifier] = value;
-        }
-
-        static Get(identifier) {
-            return window.localStorage[identifier];
-        }
-
-
-
-    }
-
-
-    class History {
-        //Generally URLS have a 1024 character limit, some browsers go up
-        // much higher but assuming 1024 is probably safest.
-        // So to store history data the hash history tag is formated like
-        // #version={version},flags=(a 366 digit long string of 0-1's)
-
-
-
-        static setup(){
-            History_data = new Array(367).fill(0);
-        }
-
-        static update(id, value, push=false){
-            var position = wfmastery.json_id2pos[id];
-            History_data[position] = value;
-
-            if(push===true){
-                History.push();
-            }
-
-        }
-
-        static check() {
-            //Should only be called if localStorage is empty.
-            var indexed, version_st, version_str, history_str, history_arr;
-
-            [version_str, history_str] = History.get();
-
-            if(!version_str || !history_str){
-                return false;
-            }
-
-            history_arr = history_str.split("");
-
-            indexed = [];
-            for(let position = 0; position < history_arr.length; position++){
-                Storage.Set(wfmastery.positions[position], history_arr[position]);
-            }
-
-            return true;
-        }
-
-        static get() {
-            var hash, version, state;
-
-            hash = window.location.hash.slice(1).split(",");
-
-            for(let i of hash){
-                if(i.startsWith("version")){
-                    version=i.split("=")[1];
-                }
-                else if(i.startsWith("state")){
-                    state=i.split("=")[1];
-                }
-            }
-            return [version, state];
-        }
-
-        static push() {
-            var hist_str;
-            hist_str = History_data.join("");
-            window.history.pushState(null, null, `#version=1,state=${hist_str}`);
-        }
-
-    }
-
-
-    function reload(){
+    function reload(storage, history){
 
         var index,
             labels,
@@ -280,18 +279,15 @@
             version_str, history_str; //I am somewhat proud of this abomination
 
 
-        index = Storage.Index_as_array();
+        index = storage.index_as_array();
 
 
         if(index.length === 0){
             //We are done
-            if(History.check() !== true) {
+            if(history.check(storage) !== true) {
                 return;
             }
         }
-
-
-
 
         for (let i = 0; i < index.length; i++) {
             data_id = index[i];
@@ -302,11 +298,11 @@
                 continue;
             }
 
-            nflag = Storage.Get(data_id);
+            nflag = storage.get(data_id);
 
             if(nflag === null) {
                 nflag = 0;
-                History.set(data_id, nflag);
+                history.set(data_id, nflag);
             }
 
             switch(nflag) {
@@ -332,13 +328,20 @@
 
 
     function main(){
-        var elements;
-        History.setup();
-        reload();
+        var elements, history, storage, click_handler, app;
 
-        //bindbyclass("click", "individual", clicked);
-        bindbyclass("mousedown", "individual", mousedown);
-        bindbyclass("mouseup", "individual", mouseup);
+        history = new HistoryCls(wfmastery);
+        storage = new StorageCls(window.localStorage);
+
+        app = { change_attribute };
+
+        click_handler = new ClickHandler(app, history, storage);
+
+        reload(storage, history);
+
+        bindbyclass("mousedown", "individual", evt=> click_handler.down(evt));
+        bindbyclass("mouseup", "individual", evt=> click_handler.up(evt));
+
         bindbyclass("click", "menu-option", menuclick);
 
     }

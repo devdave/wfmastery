@@ -7,7 +7,6 @@ import json
 
 item_element = """
             <label class="individual" id="{id}" data-id="{id}" data-state="False">{name}</label>
-            <input class="individual_input" name="{id}" type="checkbox" data-category="{category}" data-subcategory="{subcategory}" data-id="{id}" value=0>
 """
 
 # item_line = """<span class="subgroup_box">
@@ -44,7 +43,7 @@ grocery_item = """
 
 """
 
-with open("views/index.html") as my_file:
+with open("views/index.view.html") as my_file:
     html_body = my_file.read()
 
 def main():

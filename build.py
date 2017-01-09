@@ -77,19 +77,9 @@ def main():
 
         group_html += main_group.format(category_name=group_key, body=sub_buffer, is_on=group_key == active_type)
 
-        # for subcategory in sorted(temp.keys()):
-        #     sub_buffer = ""
-        #     ordered = sorted(temp[subcategory], key=lambda x: x["name"])
-        #
-        #     for thing in ordered:
-        #         item_html = item_element.format(**thing)
-        #         sub_buffer += item_html + "\n"
-        #     buffer += item_line.format(name=subcategory, body=sub_buffer) + "\n"
-
-        # group_html += main_group.format(category_name=group_key, body=buffer, is_on=group_key == active_type)
 
 
-    menu_list = "\n".join([menu_item.format(name=x, is_on=sorted_main_types[0] == x) for x in sorted_main_types])
+    menu_list = "".join([menu_item.format(name=x, is_on=sorted_main_types[0] == x) for x in sorted_main_types])
 
     #Build grocery list
 

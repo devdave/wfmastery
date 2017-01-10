@@ -133,7 +133,7 @@ wfmastery_data = [
     i(group_consts.Primary, "Convectrix", sub_consts.Shotgun),
     i(group_consts.Primary, "Drakgoon", sub_consts.Shotgun),
     i(group_consts.Primary, "Hek", sub_consts.Shotgun),
-    i(group_consts.Primary, "Hek Vaykor", sub_consts.Shotgun),
+    i(group_consts.Primary, "Vaykor Hek", sub_consts.Shotgun),
     i(group_consts.Primary, "Kohm", sub_consts.Shotgun),
     i(group_consts.Primary, "Phage", sub_consts.Shotgun, is_dojo=True),
     i(group_consts.Primary, "Sobek", sub_consts.Shotgun),

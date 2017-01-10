@@ -125,7 +125,7 @@ wfmastery_data = [
     i(group_consts.Primary, "Glaxion", sub_consts.Rifle, is_dojo=True),
     i(group_consts.Primary, "Ignis", sub_consts.Rifle, is_dojo=True),
     i(group_consts.Primary, "Quanta ", sub_consts.Rifle, is_dojo=True),
-    i(group_consts.Primary, "Quanta  Vandal", sub_consts.Rifle),
+    i(group_consts.Primary, "Quanta Vandal", sub_consts.Rifle),
     i(group_consts.Primary, "Synapse", sub_consts.Rifle, is_dojo=True),
     #sub_consts.Shotguns
     i(group_consts.Primary, "Boar", sub_consts.Shotgun),
@@ -133,7 +133,7 @@ wfmastery_data = [
     i(group_consts.Primary, "Convectrix", sub_consts.Shotgun),
     i(group_consts.Primary, "Drakgoon", sub_consts.Shotgun),
     i(group_consts.Primary, "Hek", sub_consts.Shotgun),
-    i(group_consts.Primary, "Vaykor", sub_consts.Shotgun),
+    i(group_consts.Primary, "Hek Vaykor", sub_consts.Shotgun),
     i(group_consts.Primary, "Kohm", sub_consts.Shotgun),
     i(group_consts.Primary, "Phage", sub_consts.Shotgun, is_dojo=True),
     i(group_consts.Primary, "Sobek", sub_consts.Shotgun),

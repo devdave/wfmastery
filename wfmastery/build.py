@@ -4,6 +4,9 @@
 import data_v1 as d1
 import operator as OP
 import json
+from collections import namedtuple
+
+
 
 item_element = """
             <label class="individual" id="{id}" data-id="{id}" data-state="False">{name}</label>

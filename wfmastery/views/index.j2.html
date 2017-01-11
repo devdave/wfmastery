@@ -26,9 +26,9 @@
             {% for item in menu_items %}
                 <li
                     class="menu-option"
-                    id="menutab_{item.name}"
-                    data-active="{item.is_on}"
-                    data-dest="category_{item.name}">{name}</li>
+                    id="menutab_{{item.name}}"
+                    data-active="{{item.is_on}}"
+                    data-dest="category_{{item.name}}">{name}</li>
             {% endfor %}
         </ul>
 
@@ -36,15 +36,15 @@
 
         <span id="content_body">
         {% for equip_block in manifest %}
-            <fieldset class="menu_tab" id="category_{equip_block.category_name}" data-active="{equip_block.is_on}">
+            <fieldset class="menu_tab" id="category_{{equip_block.category_name}}" data-active="{{equip_block.is_on}}">
                 <legend>{category_name}</legend>
                 <span class="type_box">
                 {% for item in equip_block.items %}
                     <label class="individual"
-                        id="{item.id}"
-                        data-position="{item.position}"
-                        data-id="{item.id}"
-                        data-state="False">{name}</label>
+                        id="{{item.id}}"
+                        data-position="{{item.position}}"
+                        data-id="{{item.id}}"
+                        data-state="False">{{name}}</label>
                 {% endfor %}
                 </span>
             </fieldset>
@@ -61,14 +61,14 @@
             {% for item in equip_block.items %}
                 <li
                     class="grocery_item"
-                    data-id="grocery_{item.id}"
-                    data-active="{item.is_on}"
+                    data-id="grocery_{{item.id}}"
+                    data-active="{{item.is_on}}"
                     data-state="False"
-                    data-cat="{equip_block.category}">
+                    data-cat="{{equip_block.category}}">
                     {equip_block.category} -
                         <a
-                            href="http://warframe.wikia.com/wiki/{name}"
-                            target="_blank">{item.name}</a>
+                            href="http://warframe.wikia.com/wiki/{{item.name}}"
+                            target="_blank">{{item.name}}</a>
                 </li>
             {% endfor %}
             {% endfor %}
@@ -77,7 +77,7 @@
     </body>
     <script>
         /** todo relocate this to a data.js file*/
-        var wfmastery = {{}};
+        var wfmastery = {};
         wfmastery.positions = {pos_data};
         wfmastery.json_id2pos = {json_id2pos};
     </script>

@@ -40,7 +40,11 @@
                 <legend>{category_name}</legend>
                 <span class="type_box">
                 {% for item in equip_block.items %}
-                    <label class="individual" id="{item.id}" data-id="{item.id}" data-state="False">{name}</label>
+                    <label class="individual"
+                        id="{item.id}"
+                        data-position="{item.position}"
+                        data-id="{item.id}"
+                        data-state="False">{name}</label>
                 {% endfor %}
                 </span>
             </fieldset>

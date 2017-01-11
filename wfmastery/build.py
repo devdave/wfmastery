@@ -43,7 +43,6 @@ grocery_item = """
                 target="_blank"
                 >{name}</a>
         </li>
-
 """
 
 with open("views/index.view.html") as my_file:

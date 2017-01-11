@@ -26,7 +26,9 @@ category = [
     "Archwing",
     "Things",
     "Dojo",
-    "Sentinel"
+    "Sentinel Equipment",
+    "Sentinels",
+    "Warframes"
 ]
 
 

@@ -46,6 +46,17 @@ SCHEMA_SPECIAL_IDS = SCHEMA_MAP["special_identifiers"] = """
             parent_id: Some things have child components needed to build them (Ember's neuro, chassis, systems, blueprint)
 """
 
+"""
+    Field:
+        index (int): Locked in stone position for the JS localStorage/History storage; the huge ass string that looks like binary
+        display_pos: Initially will == index but can be changed to match Warframes stats view
+        name: The names used in wiki currently and unlikely to change
+        pretty_name: Allows for "Paris MK1" to be "MK1-Paris"
+        wiki_url: if None, use base_wikia_url+name
+        is_special (enum): 0/null is a no, 1 for prime, 2 for syndicate. 3 event, 4 farmed
+        parent_id: If it is part of a set.  So "Ember" would have "Blueprint", "Chassis", and other pieces pointing to "Ember"
+"""
+
 SCHEMA_EQUIPMENT = SCHEMA_MAP["equipment"] = """
     CREATE TABLE equipment
     (id, index, display_pos, name, pretty_name, wiki_url, category_id, subcategory_id, hidden, is_special, parent_id)
@@ -76,3 +87,29 @@ SCHEMA_FAMILIARS = SCHEMA_MAP["familiars"] = """
     CREATE TABLE familiars
     (index, display_pos, name, pretty_name, category_id, subcategory_id, hidden, is_special, parent_id)
 """
+
+SCHEMA_TRX_LOG = SCHEMA_MAP["transactions"] = """
+    CREATE TABLE transactions
+    (id, when, where, what, facts)
+"""
+
+"""
+
+    when did this happen
+    where did this happen (table name)
+    what happened
+        [create, update, delete]
+    facts
+        if create just record_id
+        if update just the difference
+            foo originally == 1 but is now == 2
+        if delete just record_id
+
+    Intended as an additional form of tracking on top of backing up the data itself
+        idea is to flush this after backup.  If somewhere down the road something
+        has gone horribly wrong, the trx can be fetched to hopefully find when
+        something was mangled or destroyed.
+
+
+"""
+

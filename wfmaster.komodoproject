@@ -2,5 +2,36 @@
 <!-- Komodo Project File - DO NOT EDIT -->
 <project id="6b265e05-2c8c-4bd8-8117-504178c83a9e" kpf_version="5" name="wfmaster.komodoproject">
 <preference-set idref="6b265e05-2c8c-4bd8-8117-504178c83a9e" id="project" preftype="project">
+<preference-set id="Invocations">
+<preference-set id="Project">
+  <string id="cookieparams"></string>
+  <string relative="path" id="cwd"></string>
+  <string id="documentRoot"></string>
+  <string id="executable-params"></string>
+  <string id="filename"></string>
+  <string id="getparams"></string>
+  <string id="language">Python3</string>
+  <string id="mpostparams"></string>
+  <string id="params"></string>
+  <string id="postparams"></string>
+  <string id="posttype">application/x-www-form-urlencoded</string>
+  <string id="request-method">GET</string>
+  <boolean id="show-dialog">1</boolean>
+  <boolean id="sim-cgi">0</boolean>
+  <boolean id="use-console">0</boolean>
+  <string id="userCGIEnvironment"></string>
+  <string id="userEnvironment"></string>
+</preference-set>
+</preference-set>
+  <string id="currentInvocationLanguage">Python3</string>
+  <string relative="path" id="import_dirname"></string>
+  <string id="jshintOptions">esnext=true browser=true</string>
+  <string id="language">Python3</string>
+  <string id="lastInvocation">Project</string>
+  <string id="last_local_directory">None</string>
+  <string id="last_remote_directory">None</string>
+  <long id="prefs_version">1</long>
+  <string relative="path" id="pylint3_checking_rcfile">.pylintrc</string>
+  <string relative="path" id="python3DefaultInterpreter">env/Scripts/python.exe</string>
 </preference-set>
 </project>

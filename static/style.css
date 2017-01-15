@@ -1,50 +1,64 @@
 
+
 /*
 ######################################
 #########Shit show 1##################
 ######################################
 */
 
-.menu {
-    list-style: none;
+.menu_box {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    text-align: center;
+    margin: 0 auto;
+
+    border-radius: 15px 15px 0 0;
+    overflow: hidden;
 }
 
 .menu-option {
-    display: inline-block;
-    border: outset black thin;
-    padding: 12px 14px 12px 14px;
-    font-size: 2em;
-    border-radius: 15px;
-    background-color: red;
-    cursor: pointer;
+    border: solid black thin;
+    font-size: 2.5em;
+    padding: .2em 1em;
+    flex-grow: 1;
+
+}
+
+.menu-option {
+    background-color: gray;
+    color: black;
 }
 
 .menu-option[data-active="True"] {
-    background: green;
-}
-
-.menu-option[data-active="Own"] {
+    background-color: green;
 
 }
+
+
 
 .menu_tab {
     display: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 0 auto;
+    text-align: center;
 }
 
 .menu_tab[data-active="True"] {
-    display: block;
+    display: flex;
+    justify-content: center;
 }
 
-legend {
-    font-size: 2em;
-}
 
-label.subgroup {
-    font-size: 1.5em;
-}
+/*label.subgroup {*/
+/*    font-size: 1.5em;*/
+/*}*/
 
 .individual {
     font-size: 1.2em;
+    flex-grow: 1;
 }
 
 
@@ -55,7 +69,8 @@ label.subgroup {
 */
 
 .menu_tab {
-    border-radius: 15px;
+    border-radius: 0 0 15px 15px;
+    /*border-radius: 15px;*/
 }
 
 .type_box {
@@ -63,25 +78,24 @@ label.subgroup {
     flex-flow: row wrap;
 }
 
-.subgroup_box {
-    border: inset thin black;
-    border-radius: 12px;
-    padding: 2px;
-}
+/*.subgroup_box {*/
+/*    border: inset thin black;*/
+/*    border-radius: 12px;*/
+/*    padding: 2px;*/
+/*}*/
 
-.subgroup {
-    background-color: lightgray;
-    display: flex;
+/*.subgroup {*/
+/*    background-color: lightgray;*/
+/*    display: flex;*/
+/**/
+/*}*/
 
-}
-
-.sgroup_box {
-    display: flex;
-    flex-flow: row wrap;
-    max-width: 14em;
-
-
-}
+/*.sgroup_box {*/
+/*    display: flex;*/
+/*    flex-flow: row wrap;*/
+/*    max-width: 14em;*/
+/**/
+/*}*/
 
 .individual {
     display: table-cell;
@@ -109,9 +123,9 @@ label.subgroup {
 }
 
 
-.individual_input {
-    display: none;
-}
+/*.individual_input {*/
+/*    display: none;*/
+/*}*/
 
 /*
 ######################################
@@ -119,17 +133,49 @@ label.subgroup {
 ######################################
 */
 
-.grocery_item {
-    display: inline-block;
-    border: thin black solid;
-    margin: 1 0 1 2;
-    width: 16em;
-    font-size: 1.5em;
+
+
+.grocery_block {
+    display: flex;
+    flex-wrap: wrap;
+    width: 90%;
+
 }
 
-
-.grocery_item[data-active="False"] {
+.grocery_block[data-active="False"] {
     display: none;
+}
+
+.grocery_item {
+    /*display: inline-block;*/
+    /*display: flex;*/
+    border: thin black solid;
+    padding: .5em;
+    width: 100%;
+    font-size: 1.5em;
+    flex-grow: 1;
+}
+
+.components_body {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 4px;
+    /*border: solid thin black;*/
+}
+
+.component_block {
+    margin: 0 10px 0 10px;
+    /*border: solid thin black;*/
+}
+
+.component_block ul,li {
+    margin: 0;
+    padding 5px;
+}
+
+.component_block .component_name {
+    width: 100%;
+    border-bottom: solid thick black;
 }
 
 .grocery_item[data-state="True"] {

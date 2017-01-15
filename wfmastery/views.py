@@ -5,9 +5,9 @@ from wfmastery import db
 
 from flask import render_template
 from flask import g
+from flask import url_for
 # from flask import
 from flask.views import MethodView
-
 
 
 class EquipmentAPI(MethodView):
@@ -60,8 +60,12 @@ App.add_url_rule("/records/<int:record_id>",
 #Product
 @App.route("/")
 def index():
+    context = {}
     with g.db_scope() as session:
-        count = session.query(db.Equipment).count().scalar()
+        context['menu_items'] = db.EquipmentCategory.fetch_all(session)
+        context['pos2id'], context['id2pos'] = db.Equipment.generate_position_data(session)
+        context['manifest'] = session.query(db.EquipmentCategory)
 
-    return "Hello world - {}".format(count)
-    # return render_template("views/index.html")
+
+
+    return render_template("index.j2.html", **context)

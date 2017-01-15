@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>MR hell</title>
-        <link rel="stylesheet" type="text/css" href="./style.css">
+        <link rel="stylesheet" type="text/css" href="static/style.css">
     </head>
     <body>
         <a href="https://github.com/devdave/wfmastery">
@@ -12,74 +12,111 @@
                 alt="Fork me on GitHub"
                 data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png">
         </a>
+
         <h1>Warframe Mastery Rank hell checklist</h1>
+        <br><br>
         <br>
 
-        <p>
-            This is a work in progress, it "works", and I don't care how ugly it is.<br>
-            Click if you have an item and it has been leveled.<br>
-            Hold left mouse until it is yellow if you have something but not leveled it.<br>
-            Click to clear back to red from green or yellow.
-        </p>
 
-        <ul class="menu">
-            {% for item in menu_items %}
-                <li
-                    class="menu-option"
-                    id="menutab_{{item.name}}"
-                    data-active="{{item.is_on}}"
-                    data-dest="category_{{item.name}}">{name}</li>
-            {% endfor %}
-        </ul>
+        <div class="menu_box">
+{%          for category in manifest %}
+                <span class="menu-option"
+                    id="menuitem_{{category.id}}"
+                    data-active="{{category.is_first()}}"
+                    data-dest="category_{{category.id}}">{{category.pretty_name}}</span>
+{%          endfor %}
+        </div>
 
-        <p>MR hell checklist</p>
+
 
         <span id="content_body">
-        {% for equip_block in manifest %}
-            <fieldset class="menu_tab" id="category_{{equip_block.category_name}}" data-active="{{equip_block.is_on}}">
-                <legend>{category_name}</legend>
-                <span class="type_box">
-                {% for item in equip_block.items %}
-                    <label class="individual"
-                        id="{{item.id}}"
-                        data-position="{{item.position}}"
-                        data-id="{{item.id}}"
-                        data-state="False">{{name}}</label>
-                {% endfor %}
-                </span>
-            </fieldset>
-        </span>
-        {% endfor %}
-        {# really don't like repeating myself but I like having the two blocks
-            wrapped in their own containers #}
+{%          for category in manifest %}
+            <fieldset
+                class="menu_tab"
+                id="category_{{category.id}}"
+                data-active="{{category.is_first()}}">
 
+               <!--<legend>{{category.name}}</legend>-->
+
+                <span class="type_box">
+{%              for record in category.children %}
+                    <label class="individual"
+                        id="{{record.id}}"
+                        data-position="{{record.display_pos}}"
+                        data-id="{{record.data_id}}"
+                        data-state="False">{{record.name}}</label>
+{%              endfor %}
+                </span>
+
+            </fieldset>
+
+        </span>
+{%          endfor %}
+
+        <div style="width:90%; margin: 0 auto;">
+            <span
+                style="color:white; background-color:green"
+            >Default - I don't have it</span>
+            <span
+                style="color:black; background-color:yellow"
+            >Hold down - I have it but its not leveled</span>
+            <span
+                style="color:white; background-color:blue"
+            >Prime finder - I have all the pieces but haven't built it</span>
+        </div>
 
         <span id="grocery_body">
-            <h1>Grocery list</h1>
-            <ul id="groceries">
-            {% for equip_block in manifest %}
-            {% for item in equip_block.items %}
-                <li
-                    class="grocery_item"
+            <h1>Prime Finder (IN PROGRESS)</h1>
+
+{%          for category in manifest %}
+            <div class="grocery_block"
+            data-cat="category_{{category.id}}"
+            data-active="{{category.is_first()}}">
+
+{%              for item in category.children %}
+{%                  if item.special.name == "Prime" %}
+                <fieldset class="grocery_item"
                     data-id="grocery_{{item.id}}"
-                    data-active="{{item.is_on}}"
                     data-state="False"
-                    data-cat="{{equip_block.category}}">
-                    {equip_block.category} -
-                        <a
-                            href="http://warframe.wikia.com/wiki/{{item.name}}"
-                            target="_blank">{{item.name}}</a>
-                </li>
-            {% endfor %}
-            {% endfor %}
-            </ul>
+                    data-cat="{{category.id}}">
+
+                        <legend>
+                            <a
+                                href="http://warframe.wikia.com/wiki/{{item.name}}"
+                                target="_blank">{{item.name}}</a>
+                        </legend>
+                    <div class="components_body">
+{%                  for component in item.components %}
+                        <span class="component_block">
+                            <div class="component_name">{{component.name}}</div>
+                            <ul>
+{%                      for location in component.locations %}
+                                <div>
+                                    <li>
+                                        {{location.tier.name}},
+                                        {{location.relic.name}},
+                                        {{location.rarity.name}}
+                                    </li>
+                                </div>
+{%                      endfor %}
+                            </ul>
+                        </span>
+{%                  endfor %}
+                    </div>
+                </fieldset>
+{%              endif %}
+{%              endfor %}
+            </div>
+{%          endfor %}<legend>
+
         </span>
+
     </body>
     <script>
         /** todo relocate this to a data.js file*/
         var wfmastery = {};
-        wfmastery.positions = {pos_data};
-        wfmastery.json_id2pos = {json_id2pos};
+        wfmastery.positions = {{pos2id|tojson}};
+        wfmastery.json_id2pos = {{id2pos|tojson}};
     </script>
-    <script src="./script.js"></script>
+    <script src="static/script.js"></script>
 </html>

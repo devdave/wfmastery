@@ -1,6 +1,6 @@
 #pylint: disable=R0201
 
-from app import App
+from wfmastery import App
 
 from flask import render_template
 # from flask import

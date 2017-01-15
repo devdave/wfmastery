@@ -53,8 +53,9 @@ class HistoryCls {
     // So to store history data the hash history tag is formated like
     // #version={version},flags=(a 366 digit long string of 0-1's)
 
-    constructor (master_data, history_size=367){
+    constructor (master_data, history_size=380, history_version=-1){
         this.master = master_data;
+        this.version = history_version;
         this.data = new Array(history_size).fill(0);
     }
 
@@ -88,6 +89,16 @@ class HistoryCls {
         return true;
     }
 
+    decompress(hash_str) {
+        var new_str = hash_str;
+        return new_str;
+    }
+
+    compress(hash_str) {
+        var new_str = hash_str;
+        return new_str;
+    }
+
     get() {
         var hash, version, state;
 
@@ -107,7 +118,7 @@ class HistoryCls {
     push() {
         var hist_str;
         hist_str = this.data.join("");
-        window.history.pushState(null, null, `#version=1,state=${hist_str}`);
+        window.history.pushState(null, null, `#version=${this.version},state=${hist_str}`);
     }
 
 }
@@ -184,6 +195,7 @@ class ClickHandler {
         if(new_state !== null) {
             this.app.change_attribute(data_id, new_state, num_flag);
             this.storage.set(data_id, num_flag);
+            debugger;
             this.history.update(data_id, num_flag, true);
         }
     }
@@ -233,7 +245,7 @@ class ClickHandler {
 
 
         document
-            .querySelectorAll(".grocery_item")
+            .querySelectorAll(".grocery_block")
             .forEach(x=>{
                 if(x.getAttribute("data-cat")==new_category) {
                     x.setAttribute("data-active", "True");
@@ -263,7 +275,7 @@ class ClickHandler {
             button.setAttribute("data-active", state);
             child_panel.setAttribute("data-active", state);
         }
-        show_or_hide_groceries(el.innerHTML);
+        show_or_hide_groceries(el.getAttribute("data-dest"));
     }
 
 
@@ -330,7 +342,7 @@ class ClickHandler {
     function main(){
         var elements, history, storage, click_handler, app;
 
-        history = new HistoryCls(wfmastery);
+        history = new HistoryCls(wfmastery, 2);
         storage = new StorageCls(window.localStorage);
 
         app = { change_attribute };

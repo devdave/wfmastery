@@ -16,18 +16,6 @@ from enum import Enum, unique, IntEnum
 
 
 
-category = [
-    "Warframes",
-    "Primary",
-    "Secondary",
-    "Melee",
-    "Archwing",
-    "Things",
-    "Dojo",
-    "Sentinel",
-    "Sentinel_Equipment",
-    "Companions",
-]
 
 @unique
 class WFCategories(IntEnum):

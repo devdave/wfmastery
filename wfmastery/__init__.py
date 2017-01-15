@@ -39,9 +39,9 @@ def setup_db():
     App.config["DB_PATH"] = db_path
 
     #acid test to make sure it works
-    _, NewTRX = db.boostrap(db_path, True, False)
-    with db.scope(NewTRX) as session:
-        print("Equipment count: {}".format(session.query(db.Equipment).count()))
+    # _, NewTRX = db.boostrap(db_path, True, False)
+    # with db.scope(NewTRX) as session:
+    #     print("Equipment count: {}".format(session.query(db.Equipment).count()))
 
 setup_db()
 

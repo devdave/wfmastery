@@ -19,7 +19,12 @@ from sqlalchemy.orm import sessionmaker
 
 from contextlib import contextmanager
 
-Base = declarative_base()
+
+class BaseExt(object):
+    id = Column(Integer, primary_key=True)
+
+
+Base = declarative_base(cls=BaseExt)
 
 
 
@@ -67,20 +72,18 @@ def boostrap(sqlite_path, create_all=False, nuke_it=False):
 class EquipmentCategory(Base):
     __tablename__ = "equipment_categories"
 
-    id = Column(Integer, primary_key=True)
+
     name = Column(String(250), unique=True, nullable=False)
     display_order = Column(Integer, nullable=False)
     #TODO sanity check a backpopulate from category to equipment
 
 class EquipmentSubcategory(Base):
     __tablename__ = "equipment_subcategories"
-    id = Column(Integer, primary_key=True)
     name = Column(String(250), unique=True, nullable=False)
 
 
 class SpecialIdentifier(Base):
     __tablename__ = "special_identifiers"
-    id = Column(Integer, primary_key=True)
     name = Column(String(250), unique=True, nullable=False)
     pretty_name = Column(String(250), nullable=True)
 
@@ -88,23 +91,19 @@ class SpecialIdentifier(Base):
 
 class RelicTier(Base):
     __tablename__ = "relic_tiers"
-    id = Column(Integer, primary_key=True)
     name = Column(String(250), unique=True, nullable=False)
 
 class RelicName(Base):
     __tablename__ = "relic_names"
-    id = Column(Integer, primary_key=True)
     name = Column(String(250), unique=True, nullable=False)
 
 
 class Rarity(Base):
     __tablename__ = "rarities"
-    id = Column(Integer, primary_key=True)
     name = Column(String(250), unique=True, nullable=False)
 
 class Location(Base):
     __tablename__ = "locations"
-    id = Column(Integer, primary_key=True)
     parent_id = Column(Integer, ForeignKey("components.id"), nullable=False)
     parent = relationship("Component", back_populates="locations")
 
@@ -122,7 +121,6 @@ class Location(Base):
 
 class Component(Base):
     __tablename__ = "components"
-    id = Column(Integer, primary_key=True)
     parent_id = Column(Integer, ForeignKey("equipment.id"), nullable=False)
     parent = relationship("Equipment", back_populates="components")
     name = Column(String(250))
@@ -135,7 +133,6 @@ class Component(Base):
 
 class Equipment(Base):
     __tablename__ = "equipment"
-    id = Column(Integer, primary_key=True)
     """
         id - data_id
         position - index_id
@@ -176,7 +173,6 @@ class Equipment(Base):
 
 class Transaction(Base):
     __tablename__ = "transactions"
-    id = Column(Integer, primary_key=True)
     when = Column(DateTime)
     where = Column(String(250), nullable=False)
     what = Column(String(250), nullable=False)

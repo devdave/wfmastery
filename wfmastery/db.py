@@ -8,6 +8,9 @@ from sqlalchemy import Boolean
 from sqlalchemy import DateTime
 from sqlalchemy import create_engine
 
+#Intended for use outside of this file
+from sqlalchemy import func as f
+
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship

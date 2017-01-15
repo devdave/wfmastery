@@ -14,6 +14,7 @@
 # from collections import namedtuple
 from enum import Enum, unique, IntEnum
 
+from collections import defaultdict
 
 
 
@@ -621,6 +622,8 @@ wfmastery_data = [
 
 def index(raw_data):
     product = {}
+    by_category = defaultdict(list)
+
     position2id = {}
     id2position = {} #pylint: disable=W0621
     dojo = {} #going to rely heavily on Python's by-ref here
@@ -662,12 +665,14 @@ def index(raw_data):
         thing['position'] = pos
 
         product[cat_name][scat_name].append(thing)
+        by_category[cat_name].append(thing)
 
 
-    return product, position2id, id2position
+
+    return product, position2id, id2position, by_category
 
 
-indexed, positions, id2position = index(wfmastery_data)
+indexed, positions, id2position, by_category = index(wfmastery_data)
 
 debug = 1
 debug = debug + 2

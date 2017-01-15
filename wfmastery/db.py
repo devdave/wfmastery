@@ -19,6 +19,8 @@ from sqlalchemy.orm import sessionmaker
 
 from contextlib import contextmanager
 
+#Domain helper dependancies
+import json
 
 class BaseExt(object):
     id = Column(Integer, primary_key=True)
@@ -76,6 +78,10 @@ class EquipmentCategory(Base):
     name = Column(String(250), unique=True, nullable=False)
     display_order = Column(Integer, nullable=False)
     #TODO sanity check a backpopulate from category to equipment
+
+    children = relationship("Equipment",
+                            order_by="Equipment.display_pos",
+                            back_populates="category")
 
 class EquipmentSubcategory(Base):
     __tablename__ = "equipment_subcategories"

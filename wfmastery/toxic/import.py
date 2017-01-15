@@ -106,23 +106,26 @@ def main(engine, NewTRX):
 
 
     with db.scope(NewTRX) as session:
-        for _, elements in d1.indexed.items():
-            for __, things in elements.items():
-                for display_position, thing in enumerate(sorted(things, key=lambda x: x['name']), 1):
+        for _, elements in d1.by_category.items():
+            generator = enumerate(
+                sorted(elements,
+                       key=lambda x: x['name']
+                      ),
+                1
+                )
 
-                    equipment = db.Equipment(
-                        data_id=thing['id'],
-                        index_id=thing['position'],
-                        display_pos=display_position,
-                        category_id=thing['category'].value,
-                        subcategory_id=thing['subcategory'].value,
-                        special_id=thing['special'],
-                        name=thing['name'],
-                        pretty_name=thing['name']
-                        )
+            for display_position, thing in generator:
 
-                    session.add(equipment)
-
+                equipment = db.Equipment(
+                    data_id=thing['id'],
+                    index_id=thing['position'],
+                    display_pos=display_position,
+                    category_id=thing['category'].value,
+                    subcategory_id=thing['subcategory'].value,
+                    special_id=thing['special'],
+                    name=thing['name'],
+                    pretty_name=thing['name']
+                    )
 
     #Now to make our initial test
 

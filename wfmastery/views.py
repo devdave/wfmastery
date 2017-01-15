@@ -1,8 +1,10 @@
 #pylint: disable=R0201
 
 from wfmastery import App
+from wfmastery import db
 
 from flask import render_template
+from flask import g
 # from flask import
 from flask.views import MethodView
 
@@ -58,4 +60,8 @@ App.add_url_rule("/records/<int:record_id>",
 #Product
 @App.route("/")
 def index():
-    return render_template("views/index.html")
+    with g.db_scope() as session:
+        count = session.query(db.Equipment).count().scalar()
+
+    return "Hello world - {}".format(count)
+    # return render_template("views/index.html")

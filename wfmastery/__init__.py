@@ -7,7 +7,7 @@ from wfmastery import db
 import os
 
 
-App = Flask(__name__)
+App = Flask(__name__, static_folder="../static")
 
 @App.before_first_request
 def app_setup_db():
@@ -20,18 +20,18 @@ def app_setup_db():
 
 def setup_db():
     db_path = os.environ.get("DB_PATH", None)
-    assert db_path is not None
-    assert db_path.endswith(".sqlite3"), db_path
+    assert db_path is not None, "Missing environment DB_PATH"
+    assert db_path.endswith(".sqlite3"), "{} MUST end with .sqlite3".format(db_path)
     db_path = os.path.abspath(db_path)
-    assert os.path.exists(db_path), db_path
+    assert os.path.exists(db_path), "Unable to find {}".format(db_path)
 
     db_path = "sqlite:///{}".format(db_path)
     App.config["DB_PATH"] = db_path
 
     #acid test to make sure it works
-    engine, NewTRX = db.boostrap(db_path, True, False)
+    _, NewTRX = db.boostrap(db_path, True, False)
     with db.scope(NewTRX) as session:
-        print(session.query(db.f.count(db.Equipment.name)).scalar())
+        print("Equipment count: {}".format(session.query(db.Equipment).count()))
 
 setup_db()
 

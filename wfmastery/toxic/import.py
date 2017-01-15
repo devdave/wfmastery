@@ -127,24 +127,14 @@ def main(engine, NewTRX):
                     pretty_name=thing['name']
                     )
 
-    #Now to make our initial test
+                session.add(equipment)
 
-    # with db.scope(NewTRX) as session:
-    #     """
-    #         There is no organize by penis BUT there is an order_by wtf
-    #     """
-    #     records = session.query(db.Equipment)\
-    #         .join(db.EquipmentCategory, db.Equipment.category)\
-    #         .order_by(db.EquipmentCategory.display_order)\
-    #         .all()
-    #
-    #
-    #     for record in records:
-    #         print(record.category.name, record.name)
 
 
 
 if __name__ == '__main__':
     engine, NewTRX = db.boostrap("sqlite:///test.sqlite3", True, True)
+    print("Main import")
     main(engine, NewTRX)
+    print("Primes import")
     reconcile_primes(NewTRX)

@@ -22,6 +22,7 @@ from contextlib import contextmanager
 #Domain helper dependancies
 import json
 
+
 class BaseExt(object):
     id = Column(Integer, primary_key=True)
 
@@ -77,11 +78,24 @@ class EquipmentCategory(Base):
 
     name = Column(String(250), unique=True, nullable=False)
     display_order = Column(Integer, nullable=False)
-    #TODO sanity check a backpopulate from category to equipment
 
     children = relationship("Equipment",
                             order_by="Equipment.display_pos",
                             back_populates="category")
+
+    @classmethod
+    def fetch_all(cls, session):
+        return session.query(cls).order_by(cls.display_order)
+
+    def is_first(self):
+        return self.display_order == 1
+
+    @property
+    def pretty_name(self):
+        return self.name.replace("_", "-")
+
+
+
 
 class EquipmentSubcategory(Base):
     __tablename__ = "equipment_subcategories"
@@ -131,7 +145,7 @@ class Component(Base):
     parent = relationship("Equipment", back_populates="components")
     name = Column(String(250))
     required_number = Column(Integer, default=1)
-    locations = relationship("Location", back_populates="parent")
+    locations = relationship("Location", back_populates="parent", order_by=(Location.tier_id, Location.relic_id,))
 
 
 
@@ -152,7 +166,7 @@ class Equipment(Base):
     category_id = Column(Integer, ForeignKey("equipment_categories.id"))
     category = relationship(
         EquipmentCategory,
-        order_by=EquipmentCategory.display_order)
+        back_populates="children")
 
     subcategory_id = Column(Integer, ForeignKey("equipment_subcategories.id"))
     subcategory = relationship(EquipmentSubcategory)
@@ -174,6 +188,18 @@ class Equipment(Base):
 
 
     note = Column(String(250))
+
+
+    @classmethod
+    def generate_position_data(cls, session):
+        id2pos = {}
+        pos2id = {}
+
+        for record in session.query(cls.data_id, cls.display_pos):
+            id2pos[record.data_id] = record.display_pos
+            pos2id[record.display_pos] = record.data_id
+
+        return pos2id, id2pos;
 
 
 

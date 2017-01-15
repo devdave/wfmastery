@@ -18,6 +18,16 @@ def app_setup_db():
         g._new_trx_ = NewTRX #pylint: disable=W0212
         g.db_scope = lambda: db.scope(NewTRX) #pylint: disable=W0212
 
+@App.before_request
+def app_setup_db():
+    if getattr(g, "_database_", None) is None:
+        engine, NewTRX = db.boostrap(App.config["DB_PATH"], True, False) #pylint: disable=W0621
+
+        g._database_ = engine #pylint: disable=W0212
+        g._new_trx_ = NewTRX #pylint: disable=W0212
+        g.db_scope = lambda: db.scope(NewTRX) #pylint: disable=W0212
+
+
 def setup_db():
     db_path = os.environ.get("DB_PATH", None)
     assert db_path is not None, "Missing environment DB_PATH"

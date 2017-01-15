@@ -1,5 +1,5 @@
 
-import db
+from wfmastery import db
 from data import data_v1 as d1
 from parse_wikia_primes import main as primes_main
 from parse_wikia_primes import Rarity

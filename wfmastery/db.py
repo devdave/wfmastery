@@ -113,8 +113,8 @@ class EquipmentCategory(Base):
     disable = Column(Boolean, default=False)
     notes = Column(String(250))
 
-    children = relationship("Equipment",
-                            order_by="Equipment.display_pos",
+    children = relationship(lambda: Equipment,
+                            order_by=lambda: Equipment.display_pos,
                             back_populates="category")
 
     @classmethod
@@ -159,7 +159,7 @@ class Rarity(Base):
 class Location(Base):
     __tablename__ = "locations"
     parent_id = Column(Integer, ForeignKey("components.id"), nullable=False)
-    parent = relationship("Component", back_populates="locations")
+    parent = relationship(lambda: Component, back_populates="locations")
 
     @property
     def safe_values(self):
@@ -180,7 +180,7 @@ class Location(Base):
 class Component(Base):
     __tablename__ = "components"
     parent_id = Column(Integer, ForeignKey("equipment.id"), nullable=False)
-    parent = relationship("Equipment", back_populates="components")
+    parent = relationship(lambda: Equipment, back_populates="components")
     name = Column(String(250))
     required_number = Column(Integer, default=1)
     locations = relationship("Location", back_populates="parent", order_by=(Location.tier_id, Location.relic_id,))

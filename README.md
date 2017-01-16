@@ -3,7 +3,7 @@
 
 1. What the fuck is this?
 
-    A pet project to make it easier to track equipment missing from the game warframe
+...A pet project to make it easier to track equipment missing from the game warframe
 
 2. How does it work?
 

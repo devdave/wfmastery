@@ -92,6 +92,8 @@ class EquipmentCategory(Base):
 
     name = Column(String(250), unique=True, nullable=False)
     display_order = Column(Integer, nullable=False)
+    disable = Column(Boolean, default=False)
+    notes = Column(String(250))
 
     children = relationship("Equipment",
                             order_by="Equipment.display_pos",

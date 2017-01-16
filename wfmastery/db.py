@@ -58,7 +58,7 @@ def scope(NewTRX):
         session.rollback()
         raise
     finally:
-        print("Finally closing session")
+        # print("Finally closing session")
         session.close()
         if hasattr(session, "remove"):
             session.remove()

@@ -22,6 +22,7 @@ from contextlib import contextmanager
 
 #Domain helper dependancies
 import json
+import os
 
 
 class BaseExt(object):
@@ -57,9 +58,25 @@ def scope(NewTRX):
         session.rollback()
         raise
     finally:
+        print("Finally closing session")
         session.close()
+        if hasattr(session, "remove"):
+            session.remove()
 
+        del session
 
+def quick_start(file_name):
+    return boostrap(sqlite3_url(file_name), True, False)
+
+def sqlite3_url(db_path=None):
+    assert db_path is not None, "Missing environment DB_PATH"
+    assert db_path.endswith(".sqlite3"), "{} MUST end with .sqlite3".format(db_path)
+    sql_url_path = os.path.abspath(db_path)
+
+    assert os.path.exists(sql_url_path), "Unable to find {}".format(db_path)
+    sql_url_path = "sqlite:///{}".format(db_path)
+
+    return sql_url_path
 
 
 def boostrap(sqlite_path, create_all=False, nuke_it=False):

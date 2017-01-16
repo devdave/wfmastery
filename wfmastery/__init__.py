@@ -9,40 +9,48 @@ import os
 
 App = Flask(__name__, static_folder="../static")
 
-@App.before_first_request
-def app_setup_db():
-    if getattr(g, "_database_", None) is None:
-        engine, NewTRX = db.boostrap(App.config["DB_PATH"], True, False) #pylint: disable=W0621
-
-        g._database_ = engine #pylint: disable=W0212
-        g._new_trx_ = NewTRX #pylint: disable=W0212
-        g.db_scope = lambda: db.scope(NewTRX) #pylint: disable=W0212
-
-@App.before_request
-def app_setup_db():
-    if getattr(g, "_database_", None) is None:
-        engine, NewTRX = db.boostrap(App.config["DB_PATH"], True, False) #pylint: disable=W0621
-
-        g._database_ = engine #pylint: disable=W0212
-        g._new_trx_ = NewTRX #pylint: disable=W0212
-        g.db_scope = lambda: db.scope(NewTRX) #pylint: disable=W0212
-
 
 def setup_db():
-    db_path = os.environ.get("DB_PATH", None)
-    assert db_path is not None, "Missing environment DB_PATH"
-    assert db_path.endswith(".sqlite3"), "{} MUST end with .sqlite3".format(db_path)
-    db_path = os.path.abspath(db_path)
-    assert os.path.exists(db_path), "Unable to find {}".format(db_path)
+    if getattr(g, "_database_", None) is None:
+        engine, NewTRX = db.quick_start(os.environ.get("DB_PATH"))
+        setattr(g, "_db_engine_", engine)
+        # g._db_engine_ = engine #pylint: disable=W0212
+        setattr(g, "_session_maker_", NewTRX)
 
-    db_path = "sqlite:///{}".format(db_path)
-    App.config["DB_PATH"] = db_path
+def new_db_session():
+    if hasattr(g, "_database_") is False:
+        setup_db()
 
-    #acid test to make sure it works
-    # _, NewTRX = db.boostrap(db_path, True, False)
-    # with db.scope(NewTRX) as session:
-    #     print("Equipment count: {}".format(session.query(db.Equipment).count()))
+    if hasattr(g, "db_scope"):
+        g.db_scope.remove()
+        del g.db_scope
 
-setup_db()
+    g.db_scope = lambda: db.scope(lambda: db.scoped_session(g._session_maker_)) #pylint: disable=W0212
+
+
+
+
+def close_db_session(response):
+
+    if hasattr(g, "db_scope"):
+        delattr(g, "db_scope")
+
+    return response
+
+
+
+def cleanup_db(exception=None):
+    if hasattr(g, "_db_engine_"):
+        delattr(g, "_db_engine_")
+
+    if hasattr(g, "_session_maker_"):
+        delattr(g, "_session_maker_")
+
+
+App.before_first_request(setup_db)
+App.before_request(new_db_session)
+App.after_request(close_db_session)
+App.teardown_appcontext(cleanup_db)
+
 
 from wfmastery import views

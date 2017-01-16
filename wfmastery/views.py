@@ -65,6 +65,7 @@ def index():
         context['menu_items'] = db.EquipmentCategory.fetch_all(session)
         context['pos2id'], context['id2pos'] = db.Equipment.generate_position_data(session)
         context['manifest'] = session.query(db.EquipmentCategory)
+        context['total_size'] = session.query(db.Equipment).count() + session.query(db.Component).count()
 
 
 

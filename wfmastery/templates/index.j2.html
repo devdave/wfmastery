@@ -17,64 +17,71 @@
         <br><br>
         <br>
 
-
         <div class="menu_box">
-{%          for category in manifest %}
+{%-          for category in manifest %}
                 <span class="menu-option"
                     id="menuitem_{{category.id}}"
                     data-active="{{category.is_first()}}"
-                    data-dest="category_{{category.id}}">{{category.pretty_name}}</span>
-{%          endfor %}
+                    data-dest="category_{{category.id}}"
+                >{{category.pretty_name}}</span>
+
+{%-          endfor %}
         </div>
 
 
 
         <span id="content_body">
-{%          for category in manifest %}
+{%-          for category in manifest %}
             <fieldset
                 class="menu_tab"
                 id="category_{{category.id}}"
                 data-active="{{category.is_first()}}">
 
-               <!--<legend>{{category.name}}</legend>-->
-
                 <span class="type_box">
-{%              for record in category.children %}
+{%-              for record in category.children %}
                     <label class="individual"
                         id="{{record.id}}"
                         data-position="{{record.display_pos}}"
                         data-id="{{record.data_id}}"
+                        title={{record.subcategory.name}}
                         data-state="False">{{record.name}}</label>
-{%              endfor %}
+{%-              endfor %}
                 </span>
-
             </fieldset>
-
+{%-          endfor -%}
         </span>
-{%          endfor %}
 
         <div style="width:90%; margin: 0 auto;">
             <span
-                style="color:white; background-color:green"
+                style="color:white; background-color:red"
             >Default - I don't have it</span>
             <span
                 style="color:black; background-color:yellow"
+                title="It's the small things in life"
             >Hold down - I have it but its not leveled</span>
             <span
+                style="color:white; background-color:green"
+            >Click - I have it and it is leveled</span>
+            <br>
+            <span>Prime Finder Beta features</span>
+            <span
                 style="color:white; background-color:blue"
-            >Prime finder - I have all the pieces but haven't built it</span>
+            >I have all the pieces but haven't built it</span>
+            <span
+                style="color: black; background-color: orange"
+            >I have some pieces</span>
         </div>
 
         <span id="grocery_body">
             <h1>Prime Finder (IN PROGRESS)</h1>
 
-{%          for category in manifest %}
+{%-          for category in manifest -%}
             <div class="grocery_block"
             data-cat="category_{{category.id}}"
             data-active="{{category.is_first()}}">
 
-{%              for item in category.children %}
-{%                  if item.special.name == "Prime" %}
+{%-              for item in category.children -%}
+{%-                  if item.special.name == "Prime" -%}
                 <fieldset class="grocery_item"
                     data-id="grocery_{{item.id}}"
                     data-state="False"
@@ -86,11 +93,11 @@
                                 target="_blank">{{item.name}}</a>
                         </legend>
                     <div class="components_body">
-{%                  for component in item.components %}
+{%-                  for component in item.components -%}
                         <span class="component_block">
                             <div class="component_name">{{component.name}}</div>
                             <ul>
-{%                      for location in component.locations %}
+{%-                      for location in component.locations -%}
                                 <div>
                                     <li>
                                         {{location.tier.name}},
@@ -98,16 +105,16 @@
                                         {{location.rarity.name}}
                                     </li>
                                 </div>
-{%                      endfor %}
+{%-                      endfor -%}
                             </ul>
                         </span>
-{%                  endfor %}
+{%-                  endfor -%}
                     </div>
                 </fieldset>
-{%              endif %}
-{%              endfor %}
+{%-              endif -%}
+{%-              endfor -%}
             </div>
-{%          endfor %}<legend>
+{%-          endfor -%}<legend>
 
         </span>
 

@@ -1,0 +1,83 @@
+<script>
+//var raw_str="011111111111111111111111111111121111111111111111111111101111111011111111111111110010111100011100100000010000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+//hell test
+var raw_str = Array(525).fill(9).join("");
+var clean_str = raw_str.replace(/0+$/, '');
+console.log(raw_str);
+console.log(raw_str.length, clean_str.length);
+
+function compress(str, from, to){
+    var chunks,
+        new_chunks = [],
+        new_str = ""
+        ;
+
+    chunks = str.match(/.{0,8}/g);
+
+
+    for(let chunk of chunks) {
+
+        let temp_str = "";
+        if(chunk.length === 0){
+            temp_str = "0";
+        } else {
+            temp_str = parseInt(chunk, from).toString(to); //Yes we're going to base 36, probably go to 27*2+9 (a-Z+0-9) but that's a bit too much
+        }
+
+        new_chunks.push(temp_str);
+        console.log(temp_str.length, chunk.length, chunk, temp_str);
+    }
+    return new_chunks.join(":");
+}
+
+function decompress(str, from, to, size, max_len) {
+    let chunks = str.split(":"),
+        new_chunks = [],
+        new_str = "",
+        pad_str = Array(size).fill(0).join("");
+
+
+    for(let chunk of chunks){
+        let temp_str = "";
+        temp_str = parseInt(chunk, from).toString(to);
+        temp_str = pad_str.substring(0, pad_str.length-temp_str.length)+temp_str;
+
+        console.log(chunk, temp_str, temp_str.length);
+
+
+        new_str += temp_str;
+    }
+
+    return new_str.slice(0, max_len);
+
+
+}
+
+console.group();
+console.log("Compress");
+var cstr = compress(raw_str, 10, 32);
+console.log("result", cstr.length, cstr);
+console.groupEnd();
+
+
+console.group();
+console.log("Decompress");
+var dstr = decompress(cstr, 32, 10, 16, 525);
+console.log(dstr.length, dstr);
+console.groupEnd();
+
+console.log(dstr === raw_str);
+
+//for(let i = 0; i<raw_str.length; i++){
+//    if(raw_str[i] !== dstr[i]){
+//        console.log(i, raw_str[i], dstr[i]);
+//    }
+//
+//}
+
+
+
+
+
+
+</script>

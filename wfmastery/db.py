@@ -15,6 +15,7 @@ from sqlalchemy import func as f
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import scoped_session
 
 
 from contextlib import contextmanager

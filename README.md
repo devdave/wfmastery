@@ -14,7 +14,7 @@
 3. How do I use it?...
 
 
-   You can download index.html and the /static/ directory to a local folder OR you can [goto](devdave.github.id/wfmastery) there.
+   You can download index.html and the /static/ directory to a local folder OR you can [goto](http://devdave.github.id/wfmastery) there.
 
 
 4. What is the rest of this stuff?...

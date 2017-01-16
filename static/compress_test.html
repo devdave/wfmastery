@@ -29,7 +29,7 @@ function test_wrap(tests){
             console.groupEnd();
 
             console.group("Decompress");
-            let dstr = decompress(cstr, 32, 10, 6, test.length);
+            let dstr = decompress(cstr, 32, 10, 3, test.length);
             console.groupEnd();
 
             console.log("result", dstr.length, dstr == test);
@@ -71,13 +71,13 @@ function test_wrap(tests){
 
 }
 
-function compress(str, from, to){
+function compress(str, from, to, chunk_size = 4){
     var chunks,
         new_chunks = [],
         new_str = ""
         ;
 
-    chunks = str.match(/.{0,4}/g);
+    chunks = str.match(new RegExp(`.\{0,${chunk_size}\}`, "g"));
 
 
     for(let chunk of chunks) {
@@ -135,7 +135,7 @@ function ucompress(str){
         // would overflow (does Javascript overflow?)
         //so chunks of 4 at a time is safe
 
-        for(let chunk of str.match(/.{0,4}/g)){
+        for(let chunk of str.match(/.{0,3}/g)){
             let temp_var = parseInt(chunk),
                 abuse = (isNaN(temp_var) ? 0 : `0${temp_var}` + 0),
                 temp_str = String.fromCharCode(abuse);
@@ -162,6 +162,11 @@ function udecompress(str, max_len){
     console.log(new_chunks.join(":"));
     return new_chunks.join("").substring(0, max_len);
 }
+
+
+
+//var dictionary = Array((27*2)+9);
+//for(var i = 0; i < 0;  )
 
 
 test_wrap([raw_str, hell_str]);

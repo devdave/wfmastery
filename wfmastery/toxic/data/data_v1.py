@@ -28,19 +28,20 @@ class AutoNumber(IntEnum):
 
 
 @unique
-class WFCategories(IntEnum):
-    Warframe = 1
-    Primary = 2
-    Secondary = 3
-    Melee = 4
-    Archwing_Equipment = 5
-    Things = 6
-    Dojo = 7
-    Sentinel = 8
-    Sentinel_Equipment = 9
-    Companions = 10
-    Companion_Equipment = 11
-    Archwing = 12
+class WFCategories(AutoNumber):
+    Warframe = ()
+    Primary = ()
+    Secondary = ()
+    Melee = ()
+    Archwing_melee = ()
+    Archwing_gun = ()
+    Things = ()
+    # Dojo = ()
+    Sentinel = ()
+    # Sentinel_Equipment = ()
+    Companions = ()
+    Companion_Equipment = ()
+    Archwing = ()
 
 
 @unique
@@ -86,15 +87,7 @@ class WFSubcategories(IntEnum):
     Kavat = 38
 
 
-class AutoNumber(IntEnum):
-    #from stdlib docs on enum
-    def __new__(cls):
-        #goddamn I miss metaprogramming
-        value = len(cls.__members__) + 1
-        obj = int.__new__(cls)
-        #todo ask/find out why its wrapped in only one _ and not double
-        obj._value_ = value #pylint: disable=W0212
-        return obj
+
 
 @unique
 class WFSpecials(AutoNumber):
@@ -458,96 +451,36 @@ wfmastery_data = [
     i(WFCategories.Melee, "Dark Split-Sword", WFSubcategories.Hybrid, is_dojo=True),
     i(WFCategories.Melee, "Destreza", WFSubcategories.Rapier),
     #Archwing
-    i(WFCategories.Archwing, "Corvas", WFSubcategories.Gun),
-    i(WFCategories.Archwing, "Cyngas", WFSubcategories.Gun),
-    i(WFCategories.Archwing, "Dual Decurion", WFSubcategories.Gun),
-    i(WFCategories.Archwing, "Fluctus", WFSubcategories.Gun),
-    i(WFCategories.Archwing, "Grattler", WFSubcategories.Gun, is_dojo=True, special=WFSpecials.Chem_lab),
-    i(WFCategories.Archwing, "Imperator", WFSubcategories.Gun),
-    i(WFCategories.Archwing, "Imperator Vandal", WFSubcategories.Gun, special=WFSpecials.Vandal),
-    i(WFCategories.Archwing, "Phaedra", WFSubcategories.Gun),
-    i(WFCategories.Archwing, "Velocitus", WFSubcategories.Gun),
-    i(WFCategories.Archwing, "Agkuza", WFSubcategories.Melee),
-    i(WFCategories.Archwing, "Centaur", WFSubcategories.Melee),
-    i(WFCategories.Archwing, "Kaszas", WFSubcategories.Melee),
-    i(WFCategories.Archwing, "Knux", WFSubcategories.Melee, is_dojo=True, special=WFSpecials.Chem_lab),
-    i(WFCategories.Archwing, "Onorix", WFSubcategories.Melee),
-    i(WFCategories.Archwing, "Rathbone", WFSubcategories.Melee),
-    i(WFCategories.Archwing, "Veritux", WFSubcategories.Melee),
-    i(WFCategories.Archwing, "Veritux Prisma", WFSubcategories.Melee, special=WFSpecials.Prisma),
-    #Dojo
-    # i(WFCategories.Dojo, "Amprex", WFSubcategories.Energy),
-    # i(WFCategories.Dojo, "Dera", WFSubcategories.Energy),
-    # i(WFCategories.Dojo, "Dual Cestra", WFSubcategories.Energy),
-    # i(WFCategories.Dojo, "Flux Rifle", WFSubcategories.Energy),
-    # i(WFCategories.Dojo, "Glaxion", WFSubcategories.Energy),
-    # i(WFCategories.Dojo, "Lanka", WFSubcategories.Energy),
-    # i(WFCategories.Dojo, "Opticor", WFSubcategories.Energy),
-    # i(WFCategories.Dojo, "Prova", WFSubcategories.Energy),
-    # i(WFCategories.Dojo, "Quanta", WFSubcategories.Energy),
-    # i(WFCategories.Dojo, "Serro", WFSubcategories.Energy),
-    # i(WFCategories.Dojo, "Spectra", WFSubcategories.Energy),
-    # i(WFCategories.Dojo, "Staticor", WFSubcategories.Energy),
-    # i(WFCategories.Dojo, "Supra", WFSubcategories.Energy),
-    #
-    # i(WFCategories.Dojo, "Acrid", WFSubcategories.Bio),
-    # i(WFCategories.Dojo, "Caustacyst", WFSubcategories.Bio),
-    # i(WFCategories.Dojo, "Cerata", WFSubcategories.Bio),
-    # i(WFCategories.Dojo, "Dual Ichor", WFSubcategories.Bio),
-    # i(WFCategories.Dojo, "Dual Toxocyst", WFSubcategories.Bio),
-    # i(WFCategories.Dojo, "Embolist", WFSubcategories.Bio),
-    # i(WFCategories.Dojo, "Mutalist Quanta", WFSubcategories.Bio),
-    # i(WFCategories.Dojo, "Hema", WFSubcategories.Bio),
-    # i(WFCategories.Dojo, "Paracyst", WFSubcategories.Bio),
-    # i(WFCategories.Dojo, "Phage", WFSubcategories.Bio),
-    # i(WFCategories.Dojo, "Scoliac", WFSubcategories.Bio),
-    # i(WFCategories.Dojo, "Synapse", WFSubcategories.Bio),
-    # i(WFCategories.Dojo, "Torid", WFSubcategories.Bio),
-    #
-    # i(WFCategories.Dojo, "Ack & Brunt", WFSubcategories.Chem),
-    # i(WFCategories.Dojo, "Buzlok", WFSubcategories.Chem, is_dojo=True),
-    # i(WFCategories.Dojo, "Grattler", WFSubcategories.Chem, is_dojo=True),
-    # i(WFCategories.Dojo, "Grinlok", WFSubcategories.Chem),
-    # i(WFCategories.Dojo, "Ignis", WFSubcategories.Chem),
-    # i(WFCategories.Dojo, "Jat Kittag", WFSubcategories.Chem),
-    # i(WFCategories.Dojo, "Javlok", WFSubcategories.Chem),
-    # i(WFCategories.Dojo, "Kesheg", WFSubcategories.Chem),
-    # i(WFCategories.Dojo, "Knux", WFSubcategories.Chem),
-    # i(WFCategories.Dojo, "Kohmak", WFSubcategories.Chem),
-    # i(WFCategories.Dojo, "Marelok", WFSubcategories.Chem),
-    # i(WFCategories.Dojo, "Nukor", WFSubcategories.Chem),
-    # i(WFCategories.Dojo, "Ogris", WFSubcategories.Chem),
-    # i(WFCategories.Dojo, "Sydon", WFSubcategories.Chem),
-    #
-    # i(WFCategories.Dojo, "Akstiletto", WFSubcategories.Tenno),
-    # i(WFCategories.Dojo, "Anku", WFSubcategories.Tenno),
-    # i(WFCategories.Dojo, "Attica", WFSubcategories.Tenno),
-    # i(WFCategories.Dojo, "Castanas", WFSubcategories.Tenno),
-    # i(WFCategories.Dojo, "Daikyu", WFSubcategories.Tenno),
-    # i(WFCategories.Dojo, "Dark Split-Sword", WFSubcategories.Tenno),
-    # i(WFCategories.Dojo, "Dual Raza", WFSubcategories.Tenno),
-    # i(WFCategories.Dojo, "Lacera", WFSubcategories.Tenno),
-    # i(WFCategories.Dojo, "Nami Skyla", WFSubcategories.Tenno),
-    # i(WFCategories.Dojo, "Nikana", WFSubcategories.Tenno),
-    # i(WFCategories.Dojo, "Okina", WFSubcategories.Tenno),
-    # i(WFCategories.Dojo, "Pyrana", WFSubcategories.Tenno),
-    # i(WFCategories.Dojo, "Shaku", WFSubcategories.Tenno),
-    # i(WFCategories.Dojo, "Silva & Aegis", WFSubcategories.Tenno),
-    # i(WFCategories.Dojo, "Sybaris", WFSubcategories.Tenno),
-    # i(WFCategories.Dojo, "Talons", WFSubcategories.Tenno),
-    # i(WFCategories.Dojo, "Tonbo", WFSubcategories.Tenno),
-    # i(WFCategories.Dojo, "Venka", WFSubcategories.Tenno),
+    i(WFCategories.Archwing_gun, "Corvas", WFSubcategories.Gun),
+    i(WFCategories.Archwing_gun, "Cyngas", WFSubcategories.Gun),
+    i(WFCategories.Archwing_gun, "Dual Decurion", WFSubcategories.Gun),
+    i(WFCategories.Archwing_gun, "Fluctus", WFSubcategories.Gun),
+    i(WFCategories.Archwing_gun, "Grattler", WFSubcategories.Gun, is_dojo=True, special=WFSpecials.Chem_lab),
+    i(WFCategories.Archwing_gun, "Imperator", WFSubcategories.Gun),
+    i(WFCategories.Archwing_gun, "Imperator Vandal", WFSubcategories.Gun, special=WFSpecials.Vandal),
+    i(WFCategories.Archwing_gun, "Phaedra", WFSubcategories.Gun),
+    i(WFCategories.Archwing_gun, "Velocitus", WFSubcategories.Gun),
+
+    i(WFCategories.Archwing_melee, "Agkuza", WFSubcategories.Melee),
+    i(WFCategories.Archwing_melee, "Centaur", WFSubcategories.Melee),
+    i(WFCategories.Archwing_melee, "Kaszas", WFSubcategories.Melee),
+    i(WFCategories.Archwing_melee, "Knux", WFSubcategories.Melee, is_dojo=True, special=WFSpecials.Chem_lab),
+    i(WFCategories.Archwing_melee, "Onorix", WFSubcategories.Melee),
+    i(WFCategories.Archwing_melee, "Rathbone", WFSubcategories.Melee),
+    i(WFCategories.Archwing_melee, "Veritux", WFSubcategories.Melee),
+    i(WFCategories.Archwing_melee, "Veritux Prisma", WFSubcategories.Melee, special=WFSpecials.Prisma),
+
     #Sentinels
-    i(WFCategories.Sentinel_Equipment, "Deth Machine Rifle", WFSubcategories.Rifle),
-    i(WFCategories.Sentinel_Equipment, "Laser Rifle", WFSubcategories.Rifle),
-    i(WFCategories.Sentinel_Equipment, "Laser Rifle Prime", WFSubcategories.Rifle, special=WFSpecials.Prime),
-    i(WFCategories.Sentinel_Equipment, "Stinger", WFSubcategories.Rifle),
-    i(WFCategories.Sentinel_Equipment, "Sweeper", WFSubcategories.Shotgun),
-    i(WFCategories.Sentinel_Equipment, "Sweeper Prime", WFSubcategories.Shotgun, special=WFSpecials.Prime),
-    i(WFCategories.Sentinel_Equipment, "Vulklok", WFSubcategories.Sniper),
-    i(WFCategories.Sentinel_Equipment, "Burst Laser", WFSubcategories.Sidearms),
-    i(WFCategories.Sentinel_Equipment, "Burst Laser Prisma", WFSubcategories.Sidearms, special=WFSpecials.Prisma),
-    i(WFCategories.Sentinel_Equipment, "Deconstructor", WFSubcategories.Melee), #wtf?
+    i(WFCategories.Sentinel, "Deth Machine Rifle", WFSubcategories.Rifle),
+    i(WFCategories.Sentinel, "Laser Rifle", WFSubcategories.Rifle),
+    i(WFCategories.Sentinel, "Laser Rifle Prime", WFSubcategories.Rifle, special=WFSpecials.Prime),
+    i(WFCategories.Sentinel, "Stinger", WFSubcategories.Rifle),
+    i(WFCategories.Sentinel, "Sweeper", WFSubcategories.Shotgun),
+    i(WFCategories.Sentinel, "Sweeper Prime", WFSubcategories.Shotgun, special=WFSpecials.Prime),
+    i(WFCategories.Sentinel, "Vulklok", WFSubcategories.Sniper),
+    i(WFCategories.Sentinel, "Burst Laser", WFSubcategories.Sidearms),
+    i(WFCategories.Sentinel, "Burst Laser Prisma", WFSubcategories.Sidearms, special=WFSpecials.Prisma),
+    i(WFCategories.Sentinel, "Deconstructor", WFSubcategories.Melee), #wtf?
     #Companion equipment
     i(WFCategories.Companion_Equipment, "Kavasa Collar Prime", WFSubcategories.NA, special=WFSpecials.Prime),
     #Warframes

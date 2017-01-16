@@ -181,7 +181,7 @@ class Component(Base):
     __tablename__ = "components"
     parent_id = Column(Integer, ForeignKey("equipment.id"), nullable=False)
     parent = relationship(lambda: Equipment, back_populates="components")
-    name = Column(String(250))
+    name = Column(String(250), unique=True)
     required_number = Column(Integer, default=1)
     locations = relationship("Location", back_populates="parent", order_by=(Location.tier_id, Location.relic_id,))
 
@@ -211,8 +211,8 @@ class Equipment(Base):
     special_id = Column(Integer, ForeignKey("special_identifiers.id"))
     special = relationship(SpecialIdentifier)
 
-    name = Column(String(250), nullable=False)
-    pretty_name = Column(String(250))
+    name = Column(String(250), unique=True, nullable=False)
+    pretty_name = Column(String(250), nullable=True)
     wiki_url = Column(String(250), nullable=True)
 
 

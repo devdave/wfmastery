@@ -12,5 +12,6 @@ mccabe==0.5.3
 pylint==1.6.4
 six==1.10.0
 SQLAlchemy==1.1.4
+-e git+https://github.com/devdave/wfmastery.git@017ad72f30f87442443c5a420c4b8b399100ed7f#egg=Warframe_Mastery_checklist
 Werkzeug==0.11.15
 wrapt==1.10.8

@@ -1,0 +1,5 @@
+
+{% for name, column in origin.record_meta.columns.items() %}
+    {{name}} - {{column}} - {{vars(columns)}}
+    <br>
+{% endfor %}

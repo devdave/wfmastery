@@ -26,6 +26,20 @@ import json
 class BaseExt(object):
     id = Column(Integer, primary_key=True)
 
+    @property
+    def safe_values(self):
+        safed = dict()
+
+        if hasattr(self, "name") is True:
+            safed['name'] = getattr(self, "name")
+
+        return safed
+
+    @classmethod
+    def My_meta(cls):
+        return cls.metadata.tables[cls.__tablename__]
+
+
 
 Base = declarative_base(cls=BaseExt)
 
@@ -127,6 +141,10 @@ class Location(Base):
     parent_id = Column(Integer, ForeignKey("components.id"), nullable=False)
     parent = relationship("Component", back_populates="locations")
 
+    @property
+    def safe_values(self):
+        return dict(id=self.id, tier=self.tier.name, relic=self.relic.name, rarity=self.rarity.name)
+
     #For prime stuff
     tier_id = Column(Integer, ForeignKey("relic_tiers.id"))
     tier = relationship(RelicTier)
@@ -146,7 +164,6 @@ class Component(Base):
     name = Column(String(250))
     required_number = Column(Integer, default=1)
     locations = relationship("Location", back_populates="parent", order_by=(Location.tier_id, Location.relic_id,))
-
 
 
 
@@ -173,7 +190,6 @@ class Equipment(Base):
 
     special_id = Column(Integer, ForeignKey("special_identifiers.id"))
     special = relationship(SpecialIdentifier)
-
 
     name = Column(String(250), nullable=False)
     pretty_name = Column(String(250))

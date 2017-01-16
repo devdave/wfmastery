@@ -1,0 +1,45 @@
+
+
+
+<style>
+    .manifest_record {
+        display: flex;
+    }
+
+    .manifest_record span {
+        padding: 2px 10px 0px 10px;
+    }
+
+    .manifest_record .actions form {
+        display: inline-block;
+    }
+</style>
+
+
+<fieldset class="list_body panel" data-active="True">
+    <legend>Manifest</legend>
+    <div>Record count: {{records.count()}}</div>
+    <span class="manifest_block"</span>
+{%      for record in records %}
+        <div class="manifest_record">
+            <span>
+                <a href="/{{origin.identity}}/{{record.id}}">{{record.id}}</a>
+            </span>
+{%          for safe_name, safe_value in record.safe_values.items() %}
+            <span data-colname="{{safe_name}}">
+                {{safe_value}}
+            </span>
+{%          endfor %}
+
+            <span class="actions">
+                <form class="fetch" method="get" action="/{{origin.identity}}/{{record.id}}">
+                    <button>Edit</button>
+                </form>
+                <form class="murder" method="delete" action="/{{origin.identity}}/{{record.id}}" onsubmit="protect_data(`${record.id} - ${record.digest}`);">
+                    <button>Delete</button>
+                </form>
+            </span>
+
+        </div>
+{%      endfor %}
+</fieldset>

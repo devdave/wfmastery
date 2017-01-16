@@ -1,10 +1,75 @@
 <script>
-//var raw_str="011111111111111111111111111111121111111111111111111111101111111011111111111111110010111100011100100000010000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
-//hell test
-var raw_str = Array(525).fill(9).join("");
+var raw_str="011111111111111111111111111111121111111111111111111111101111111011111111111111110010111100011100100000010000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+
+var hell_str = Array(525).fill(9).join("");
 var clean_str = raw_str.replace(/0+$/, '');
-console.log(raw_str);
-console.log(raw_str.length, clean_str.length);
+
+//console.log(raw_str);
+//console.log(raw_str.length, clean_str.length);
+
+function diff_strs(a, b){
+    for(let i = 0; i < a.length; i++){
+        if(a[i] !== b[i]) {
+            console.log(i, a[i], b[i], a[i] !== b[i]);
+        }
+    }
+}
+
+function test_wrap(tests){
+
+    for(let test of tests){
+
+        console.log("New test", test.length);
+        {
+            console.group("10 to 32");
+
+            console.group("Compress");
+            let cstr = compress(test, 10, 32);
+            console.log("result", cstr.length, cstr);
+            console.groupEnd();
+
+            console.group("Decompress");
+            let dstr = decompress(cstr, 32, 10, 6, test.length);
+            console.groupEnd();
+
+            console.log("result", dstr.length, dstr == test);
+            if(dstr != test) {
+                console.group("Comparison test");
+                diff_strs(test, dstr);
+                console.groupEnd();
+            }
+
+            console.groupEnd();
+        }
+        continue;
+
+        {
+            console.group("10 to unicode");
+
+            console.group("ucompress");
+            let cstr = ucompress(test);
+            console.log("result new size", cstr.length, "new str", cstr);
+            console.groupEnd();
+
+            console.group("Unicode to 10");
+            let dstr = udecompress(cstr, 6, test.length);
+
+            console.groupEnd();
+
+            console.log("Result", dstr.length, dstr, dstr == test);
+            if(dstr != test) {
+                diff_strs(test, dstr);
+            }
+
+            console.groupEnd();
+        }
+
+
+
+
+    }
+
+}
 
 function compress(str, from, to){
     var chunks,
@@ -12,7 +77,7 @@ function compress(str, from, to){
         new_str = ""
         ;
 
-    chunks = str.match(/.{0,8}/g);
+    chunks = str.match(/.{0,4}/g);
 
 
     for(let chunk of chunks) {
@@ -48,36 +113,58 @@ function decompress(str, from, to, size, max_len) {
         new_str += temp_str;
     }
 
-    return new_str.slice(0, max_len);
+    return new_str.substring(0, max_len);
 
 
 }
 
-console.group();
-console.log("Compress");
-var cstr = compress(raw_str, 10, 32);
-console.log("result", cstr.length, cstr);
-console.groupEnd();
-
-
-console.group();
-console.log("Decompress");
-var dstr = decompress(cstr, 32, 10, 16, 525);
-console.log(dstr.length, dstr);
-console.groupEnd();
-
-console.log(dstr === raw_str);
-
-//for(let i = 0; i<raw_str.length; i++){
-//    if(raw_str[i] !== dstr[i]){
-//        console.log(i, raw_str[i], dstr[i]);
-//    }
-//
-//}
 
 
 
 
+function ucompress(str){
+    var new_chunks = [],
+        new_str;
+
+        //Unicode maxes out at 0xFFFF so to be safe grab 4 blocks at a time
+        // which if the math in my head is ~65532?
+        // 65532
+        //  9999
+        // would fit but
+        // 99999
+        // would overflow (does Javascript overflow?)
+        //so chunks of 4 at a time is safe
+
+        for(let chunk of str.match(/.{0,4}/g)){
+            let temp_var = parseInt(chunk),
+                abuse = (isNaN(temp_var) ? 0 : `0${temp_var}` + 0),
+                temp_str = String.fromCharCode(abuse);
+            new_chunks.push(temp_str);
+
+
+            //console.log(new_chunks.length, chunk, temp_var, abuse, temp_str);
+        }
+
+        return new_chunks.join("");
+
+}
+
+function udecompress(str, max_len){
+    var new_chunks = [];
+
+    for(let i = 0 ; i < str.length; i++) {
+        let temp_num = str.charCodeAt(i);
+        console.log(temp_num, str[i]);
+        new_chunks.push(temp_num + "");
+    }
+
+
+    console.log(new_chunks.join(":"));
+    return new_chunks.join("").substring(0, max_len);
+}
+
+
+test_wrap([raw_str, hell_str]);
 
 
 </script>

@@ -1,11 +1,14 @@
+/* jshint esnext: true */
 
 class StorageCls {
-
-    constructor (storage_src) {
-        this.src = storage_src;
+    /**
+        unfortunately Komodo doesn't see this
+    */
+    constructor (src) {
+        this.src = src;
     }
 
-    index_as_string(){
+    index_as_string() {
         if(this.src.indexed === undefined){
             this.src.indexed = [];
         }
@@ -13,7 +16,7 @@ class StorageCls {
         return this.src.indexed;
     }
 
-    index_as_array(){
+    index_as_array() {
         var temp;
 
         temp = this.index_as_string().split(",");
@@ -195,7 +198,7 @@ class ClickHandler {
         if(new_state !== null) {
             this.app.change_attribute(data_id, new_state, num_flag);
             this.storage.set(data_id, num_flag);
-            debugger;
+
             this.history.update(data_id, num_flag, true);
         }
     }
@@ -314,8 +317,10 @@ class ClickHandler {
 
             if(nflag === null) {
                 nflag = 0;
-                history.set(data_id, nflag);
+
             }
+
+            history.update(data_id, nflag);
 
             switch(nflag) {
                 case "1":
@@ -332,6 +337,7 @@ class ClickHandler {
             }
 
             change_attribute(data_id, sflag, nflag);
+            history.push();
 
         }
 
@@ -342,7 +348,7 @@ class ClickHandler {
     function main(){
         var elements, history, storage, click_handler, app;
 
-        history = new HistoryCls(wfmastery, 2);
+        history = new HistoryCls(wfmastery, wfmastery.total_size, 2);
         storage = new StorageCls(window.localStorage);
 
         app = { change_attribute };

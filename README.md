@@ -1,20 +1,20 @@
 
 # IFAQ (infrequently asked questions)
 
-1. What the fuck is this?
+1. What the fuck is this?...
 
-... A pet project to make it easier to track equipment missing from the game warframe
+   A pet project to make it easier to track equipment missing from the game warframe
 
 2. How does it work?
 
-... Yes
+   Yes
 
-3. How do I use it?
+3. How do I use it?...
 
-... You can download index.html and the /static/ directory to a local folder OR you can [goto](devdave.github.id/wfmastery) there.
+   You can download index.html and the /static/ directory to a local folder OR you can [goto](devdave.github.id/wfmastery) there.
 
 
-4. What is the rest of this stuff?
+4. What is the rest of this stuff?...
 
     ...An excuse to play with various python technologies.  I retired a few years ago which has dramatically changed
     my attitude of what is/is not acceptable code.  Granted most of the stuff I made public on github is kinda scary

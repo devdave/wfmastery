@@ -30,6 +30,7 @@
   <string id="lastInvocation">Project</string>
   <string id="last_local_directory">None</string>
   <string id="last_remote_directory">None</string>
+  <boolean id="lintJavaScript_SpiderMonkey">0</boolean>
   <long id="prefs_version">1</long>
   <string relative="path" id="pylint3_checking_rcfile">.pylintrc</string>
   <string relative="path" id="python3DefaultInterpreter">env/Scripts/python.exe</string>

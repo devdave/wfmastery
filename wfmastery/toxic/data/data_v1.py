@@ -16,6 +16,15 @@ from enum import Enum, unique, IntEnum
 
 from collections import defaultdict
 
+class AutoNumber(IntEnum):
+    #from stdlib docs on enum
+    def __new__(cls):
+        #goddamn I miss metaprogramming
+        value = len(cls.__members__) + 1
+        obj = int.__new__(cls)
+        #todo ask/find out why its wrapped in only one _ and not double
+        obj._value_ = value #pylint: disable=W0212
+        return obj
 
 
 @unique

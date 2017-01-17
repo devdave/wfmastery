@@ -52,5 +52,6 @@ App.before_request(new_db_session)
 App.after_request(close_db_session)
 App.teardown_appcontext(cleanup_db)
 
+from . import views
+from . import cmds
 
-from wfmastery import views

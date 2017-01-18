@@ -1,0 +1,54 @@
+
+<form>
+
+    <label>Name</label>
+    <input type="text" value="{{record.name}}">
+    </br>
+
+    <label>Hidden</label>
+    <input type="checkbox" checked="{{record.hidden}}">
+    <br>
+
+    <label>Pretty name</label>
+    <input type="text" value="{{record.pretty_name}}">
+    </br>
+
+    <label>Wiki URL</label>
+    <input type="text" value="{{record.wiki_url}}">
+    </br>
+
+    <label>Data_id</label>
+    <input type="text" value="{{record.data_id}}">
+    </br>
+
+    <label>Index_id</label>
+    <input type="text" value="{{record.index_id}}">
+    </br>
+
+    <label>Category_id</label>
+    <input type="text" value="{{record.category_id}}">
+    <input value="{{record.category.name}}">
+    </br>
+
+    <label>Subcategory_id</label>
+    <input type="text" value="{{record.subcategory_id}}">
+    {{record.subcategory.name}}
+    </br>
+
+    <label>Special_id</label>
+    <input type="text" value="{{record.special_id}}">
+    {{record.special.name}}
+    </br>
+
+    <ul>
+{%- for component in record.components %}
+        <li>{{component.id}} - {{component.name}} - {{component.required_num}}</li>
+{%  endfor %}
+    </ul>
+    <br>
+
+    <label>Note</label>
+    <textarea cols=60 row=10 data-max-size="250" name="note">{{record.note}}</textarea>
+
+
+</form>

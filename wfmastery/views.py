@@ -20,6 +20,8 @@ class CrudAPI(MethodView):
         #TODO remind me if shit is missing
         self.list_columns = []
         self.magic_columns = {}
+        self.relationships = []
+
         self.template_form = None
         self.template_list = None
         self.record_cls = None
@@ -130,6 +132,32 @@ class CrudAPI(MethodView):
         if magic_field is not False:
             self.magic_columns[name] = magic_field
 
+    def _addRelationship(self, record_name, field_value, field_id = "id", magic_field=False):
+        """
+            View needs
+                a pretty name (use name|title)
+                which field to show
+                should it have magic filtration?
+
+        header row
+              <span class="cell magic-filter">Category</span>
+              <span class="cell{{magic_field}}">{{relationship.name|title}}</span>
+
+        data row
+            <span class="cell" data-name="category.name" data-record-id="8" data-value="Sentinel">Sentinel</span>
+            <span class="cell" data-name="{{path_name}}" data-record-id="path_id|dotpath(record)" data-value="path_name|dotpath(record)">{{path_name|dotpath(record)}}</span>
+
+        """
+        relationship = dict(
+            name=record_name,
+            path_name="{}.{}".format(record_name, field_value),
+            path_id="{}.{}".format(record_name, field_id),
+        )
+
+        if magic_field is not False:
+            self.magic_columns[record_name] = magic_field
+
+        self.relationships.append(relationship)
 
 
 @App.template_filter("dotpath")
@@ -158,8 +186,11 @@ class Equipment(CrudAPI):
         self._listColumn("name", magic_field="magic-string")
         self._listColumn("pretty_name", magic_field="magic-string")
 
+        self._addRelationship("category", "name", magic_field="magic-filter")
+        self._addRelationship("subcategory", "name", magic_field="magic-filter")
 
-        self.relationships = {}
+
+
 
 
 

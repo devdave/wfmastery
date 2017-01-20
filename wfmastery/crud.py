@@ -10,7 +10,6 @@ from flask import url_for
 from flask import redirect
 
 
-
 class CrudAPI(MethodView):
 
     def __init__(self):
@@ -20,8 +19,8 @@ class CrudAPI(MethodView):
         self.magic_columns = {}
         self.relationships = []
 
-        self.template_form = None
-        self.template_list = None
+        self.template_form = "equipment_form.j2.html"
+        self.template_list = "crud_list.j2.html"
         self.record_cls = None
         self.indentity = None
 
@@ -82,7 +81,7 @@ class CrudAPI(MethodView):
                 form_context = self.get_context()
                 form_context['record_id'] = False
                 form_context['record'] = self.record_cls()
-                context['record_form'] = render_template(self.template_form, **form_context)
+                # context['record_form'] = render_template(self.template_form, **form_context)
                 template = self.template_list
 
             return render_template(template, **context)
@@ -132,24 +131,13 @@ class CrudAPI(MethodView):
 
     def _addRelationship(self, record_name, field_value, field_id = "id", magic_field=False):
         """
-            View needs
-                a pretty name (use name|title)
-                which field to show
-                should it have magic filtration?
-
-        header row
-              <span class="cell magic-filter">Category</span>
-              <span class="cell{{magic_field}}">{{relationship.name|title}}</span>
-
-        data row
-            <span class="cell" data-name="category.name" data-record-id="8" data-value="Sentinel">Sentinel</span>
-            <span class="cell" data-name="{{path_name}}" data-record-id="path_id|dotpath(record)" data-value="path_name|dotpath(record)">{{path_name|dotpath(record)}}</span>
 
         """
         relationship = dict(
             name=record_name,
-            path_name="{}.{}".format(record_name, field_value),
+            path="{}.{}".format(record_name, field_value),
             path_id="{}.{}".format(record_name, field_id),
+            wtf="who_is_setting_this"
         )
 
         if magic_field is not False:
@@ -203,10 +191,11 @@ render_header.contextfilter=True
 
 @App.template_filter("dotpath")
 def dotpath(path, record):
+
     path_chain = path.split(".")
     result = record
     while len(path_chain):
         attribute = path_chain.pop(0)
-        result = record[attribute]
+        result = getattr(result, attribute)
 
     return result

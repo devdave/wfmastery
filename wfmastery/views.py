@@ -172,7 +172,7 @@ def dict_to_attributes(attributes, prefix=None):
     return " ".join(results)
 
 @App.template_filter("render_header")
-def render_header(context, column_name):
+def render_header(context, column_name, value="", **kwargs):
     """
         {%-          if column_name in origin.magic_columns -%}
                 {{ cell("", column_name|title, classes=origin.magic_columns[column_name]) -}}
@@ -182,9 +182,9 @@ def render_header(context, column_name):
     """
     result = ""
     if column_name in context['origin'].magic_columns:
-        result = context['cell']("", column_name.capitalize(), classes=context['origin'].magic_columns[column_name])
+        result = context['cell'](value, column_name.capitalize(), classes=context['origin'].magic_columns[column_name])
     else:
-        result = context['cell']("", column_name.capitalize())
+        result = context['cell'](value, column_name.capitalize())
 
 
     return result

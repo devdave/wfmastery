@@ -9,7 +9,7 @@
 {%- endblock head -%}
 
 {% macro cell(name, value, classes=None, data_attrs={}) %}
-        <span class="{{- ["cell",classes]|join(" ") if classes else "cell" -}}" {{data_attrs|dict2attrs("data")}}>
+        <span class="{{- ["cell",classes]|join(" ") if classes else "cell" -}}" {{data_attrs|dict2attrs("data")|safe}}>
     {{- caller() if caller else value -}}</span>
 {%- endmacro -%}
 

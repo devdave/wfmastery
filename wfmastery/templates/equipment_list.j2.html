@@ -7,15 +7,9 @@
         <script type="text/javascript" src="../static/magic_columns.js"></script>
         <link rel="stylesheet" type="text/css" href="../static/crud.css">
 {%- endblock head -%}
-{% macro data_attributes(data_map, prefix="data-") -%}
-
-    {%- for name, value in data_map.items() -%}
-    {{" "}}{{prefix}}{{name}}="{{value}}"
-    {%- endfor -%}
-{%- endmacro %}
 
 {% macro cell(name, value, classes=None, data_attrs={}) %}
-        <span class="{{- ["cell",classes]|join(" ") if classes else "cell" -}}"{{data_attributes(data_attrs)}}>
+        <span class="{{- ["cell",classes]|join(" ") if classes else "cell" -}}" {{data_attrs|dict2attrs("data")}}>
     {{- caller() if caller else value -}}</span>
 {%- endmacro -%}
 

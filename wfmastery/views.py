@@ -160,6 +160,17 @@ class CrudAPI(MethodView):
         self.relationships.append(relationship)
 
 
+@App.template_filter("dict2attrs")
+def dict_to_attributes(attributes, prefix=None):
+    results = []
+    name2dash = lambda *x: "-".join(x)
+    format_str = "%s-{}=\"{}\"" % prefix if prefix else "{}=\"{}\""
+
+    for key, value in attributes.items():
+        results.append(format_str.format(key, value))
+
+    return " ".join(results)
+
 @App.template_filter("render_header")
 def render_header(context, column_name):
     """

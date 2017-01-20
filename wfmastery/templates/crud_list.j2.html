@@ -1,45 +1,124 @@
+{% extends "template_body.j2.html" %}
+
+{% block title%}{{origin.identity|title}} list{% endblock title%}
+{%block head -%}
+{{ super() -}}
+        <script type="text/javascript" src="../static/utility.js"></script>
+        <script type="text/javascript" src="../static/magic_columns.js"></script>
+        <link rel="stylesheet" type="text/css" href="../static/crud.css">
+{%- endblock head -%}
+
+{% macro cell(name, value, classes=None, data_attrs={}) %}
+        <span class="{{- ["cell",classes]|join(" ") if classes else "cell" -}}" {{data_attrs|dict2attrs("data")|safe}}>
+    {{- caller() if caller else value -}}</span>
+{%- endmacro -%}
 
 
+{%- macro record_row(record, field_names) -%}
+{%-     for field_name in field_names  -%}
+        {{ cell(field_name, record[field_name], data_attrs=dict(name=field_name, value=record[field_name])) -}}
+{%-     endfor -%}
+        {{ caller() if caller -}}
+{%- endmacro -%}
 
-<style>
-    .manifest_record {
-        display: flex;
-    }
+{%block content %}
 
-    .manifest_record span {
-        padding: 2px 10px 0px 10px;
-    }
-
-    .manifest_record .actions form {
-        display: inline-block;
-    }
-</style>
-
-
-<fieldset class="list_body panel" data-active="True">
-    <legend>Manifest</legend>
-    <div>Record count: {{records.count()}}</div>
-    <span class="manifest_block"</span>
-{%      for record in records %}
-        <div class="manifest_record">
-            <span>
-                <a href="/{{origin.identity}}/{{record.id}}">{{record.id}}</a>
-            </span>
-{%          for safe_name, safe_value in record.safe_values.items() %}
-            <span data-colname="{{safe_name}}">
-                {{safe_value}}
-            </span>
-{%          endfor %}
-
-            <span class="actions">
-                <form class="fetch" method="get" action="/{{origin.identity}}/{{record.id}}">
-                    <button>Edit</button>
-                </form>
-                <form class="murder" method="delete" action="/{{origin.identity}}/{{record.id}}" onsubmit="protect_data(`${record.id} - ${record.digest}`);">
-                    <button>Delete</button>
-                </form>
-            </span>
-
-        </div>
+<h1 class="banner">{{origin.identity|title}}</h1>
+<div class="list">
+    <div class="header">
+{%-     for column_name in origin.list_columns -%}
+        {{column_name|render_header}}
+{%-     endfor %}
+{%-     for relationship in origin.relationships -%}
+        {{relationship.name|render_header}}
+{%-     endfor %}
+        <span class="cell">Actions</span>
+    </div>
+    <div class="subheader">
+{%-     for column_name in origin.list_columns -%}
+        {{cell("","") -}}
 {%      endfor %}
-</fieldset>
+        <span class="cell"></span>
+        <span class="cell"></span>
+        <span class="cell"></span>
+    </div>
+
+{%-  for record in records %}
+    <div class="row" data-record-id="{{record.id}}">
+{%-      call record_row(record, origin.list_columns) -%}
+{%-      for relation in origin.relationships -%}
+            {{ cell(relation["path"], relation["path"]|dotpath(record),
+                    data_attrs={
+                    "name":relation["path"],
+                    "record-id":relation["path_id"]|dotpath(record),
+                    "value":relation["path"]|dotpath(record)
+                    }
+            ) }}
+{%       endfor %}
+        {% call cell("","") %}
+            <a href="{{origin.base_url}}{{record.id}}">Edit</a>
+        {% endcall -%}
+{%      endcall %}
+    </div>
+{%-  endfor -%}
+    <div class="tail">
+        <span class="cell"></span>
+        <span class="cell"></span>
+        <span class="cell"></span>
+        <span class="cell"></span>
+        <span class="cell"></span>
+        <span class="cell"></span>
+        <span class="cell"></span>
+    </div>
+</div>
+
+
+<script>
+
+
+    var list_classes = {row:"row", cell:"cell", header_row:"header"};
+    var list_element = document.getElementsByClassName("list")[0];
+
+    function ApplyMagic(classes, list){
+        //Find the headers
+        let magic_map = {}
+        let headers = list.querySelectorAll(`.${classes.header_row} .${classes.cell}`)
+        let subheaders = list.querySelectorAll(`.subheader .${classes.cell}`)
+
+        for(var i = 0; i < headers.length; i++){
+            let contains = str=>headers[i].classList.contains(str);
+
+            let name = headers[i].innerHTML;
+
+            if(contains("magic-string")) {
+                magic_map[name] = new StringColumn(
+                    list, i+1, list_classes
+                )
+            }
+            else if(contains("magic-filter")) {
+                magic_map[name] = new FilterColumn(
+                    list, i+1, list_classes
+                )
+            }
+
+
+            let blank_fill = Array(name.length+1).fill("&nbsp;").join("");
+            //for(let si = 0; si < name.length; si++){
+            //    blank_fill += "&nbsp;"
+            //}
+
+            subheaders[i].innerHTML = blank_fill;
+
+
+
+
+        }
+
+        return magic_map;
+    }
+
+
+    djw(x=>ApplyMagic(list_classes, list_element));
+
+</script>
+{% endblock content %}

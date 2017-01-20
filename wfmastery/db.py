@@ -186,6 +186,9 @@ class Component(Base):
     required_number = Column(Integer, default=1)
     locations = relationship("Location", back_populates="parent", order_by=(Location.tier_id, Location.relic_id,))
 
+    #Equipment cannot have more then one component
+    # type.  Required number would be married somewhere
+    # else (localStorage).
     UniqueConstraint("parent_id", "name")
 
 
@@ -223,6 +226,8 @@ class Equipment(Base):
 
 
     hidden = Column(Boolean, default=False)
+    vaulted = Column(Boolean, default=False)
+    Exclusive = Column(Boolean, default=False)
 
 
 

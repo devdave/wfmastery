@@ -28,18 +28,16 @@
 {%- endmacro -%}
 
 {%block content %}
+
 <h1 class="banner">{{origin.identity|title}}</h1>
 <div class="list">
     <div class="header">
-{%-      for column_name in origin.list_columns -%}
-{%-          if column_name in origin.magic_columns -%}
-        {{ cell("", column_name|title, classes=origin.magic_columns[column_name]) -}}
-{%-          else -%}
-        {{ cell("", column_name|title) -}}
-{%          endif %}
-{%-      endfor %}
-        <span class="cell magic-filter">Category</span>
-        <span class="cell magic-filter">Subcategory</span>
+{%-     for column_name in origin.list_columns -%}
+        {{column_name|render_header}}
+{%-     endfor %}
+{%-     for relationship in origin.relationships -%}
+        {{relationship.name|render_header}}
+{%-     endfor %}
         <span class="cell">Actions</span>
     </div>
     <div class="subheader">

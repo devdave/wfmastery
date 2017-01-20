@@ -160,6 +160,27 @@ class CrudAPI(MethodView):
         self.relationships.append(relationship)
 
 
+@App.template_filter("render_header")
+def render_header(context, column_name):
+    """
+        {%-          if column_name in origin.magic_columns -%}
+                {{ cell("", column_name|title, classes=origin.magic_columns[column_name]) -}}
+        {%-          else -%}
+                {{ cell("", column_name|title) -}}
+        {%          endif %}
+    """
+    result = ""
+    if column_name in context['origin'].magic_columns:
+        result = context['cell']("", column_name.capitalize(), classes=context['origin'].magic_columns[column_name])
+    else:
+        result = context['cell']("", column_name.capitalize())
+
+
+    return result
+
+render_header.contextfilter=True
+
+
 @App.template_filter("dotpath")
 def dotpath(path, record):
     path_chain = path.split(".")

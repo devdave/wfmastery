@@ -7,6 +7,7 @@ from sqlalchemy import String
 from sqlalchemy import Boolean
 from sqlalchemy import DateTime
 from sqlalchemy import create_engine
+from sqlalchemy import UniqueConstraint
 
 #Intended for use outside of this file
 from sqlalchemy import func as f
@@ -181,9 +182,11 @@ class Component(Base):
     __tablename__ = "components"
     parent_id = Column(Integer, ForeignKey("equipment.id"), nullable=False)
     parent = relationship(lambda: Equipment, back_populates="components")
-    name = Column(String(250), unique=True)
+    name = Column(String(250))
     required_number = Column(Integer, default=1)
     locations = relationship("Location", back_populates="parent", order_by=(Location.tier_id, Location.relic_id,))
+
+    UniqueConstraint("parent_id", "name")
 
 
 

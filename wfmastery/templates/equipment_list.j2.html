@@ -200,26 +200,23 @@
         <span class="cell magic-filter"></span>
         <span class="cell"></span>
     </div>
-{% macro cell(name, value) -%}
+{%- macro cell(name, value) -%}
     <span class="cell" data-name="{{name}}" data-value="{{value}}">
 {%-     if caller -%}
         {{caller()}}
 {%-     else -%}
         {{value}}
-{%      endif -%}
+{%-      endif -%}
     </span>
-
-    <!-- {{ caller }} -->
 {%- endmacro %}
 
 {%  for record in records %}
     <div class="row" data-record-id="{{record.id}}">
-{%-      for field_name in ['id', 'hidden', 'name', 'pretty_name'] -%}
+{%-      for field_name in ['id', 'hidden', 'name', 'pretty_name'] %}
         {{ cell(field_name, record[field_name]) }}
-{%      endfor %}
+{%-      endfor %}
         <span class="cell">{{record.category.name}}</span>
         <span class="cell">{{record.subcategory.name}}</span>
-
         {% call cell("","") %}<a href="{{origin.base_url}}{{record.id}}">Edit</a>{% endcall %}
     </div>
 {%  endfor %}

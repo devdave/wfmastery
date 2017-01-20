@@ -132,6 +132,16 @@ class CrudAPI(MethodView):
 
 
 
+@App.template_filter("dotpath")
+def dotpath(path, record):
+    path_chain = path.split(".")
+    result = record
+    while len(path_chain):
+        attribute = path_chain.pop(0)
+        result = record[attribute]
+
+    return result
+
 
 class Equipment(CrudAPI):
 

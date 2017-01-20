@@ -16,11 +16,24 @@ from flask.views import MethodView
 class CrudAPI(MethodView):
 
     def __init__(self):
+
+        #TODO remind me if shit is missing
+        self.list_columns = []
+        self.magic_columns = {}
+        self.template_form = None
+        self.template_list = None
+        self.record_cls = None
+        self.indentity = None
+
         self.populate()
-        self.template_form = getattr(self, "template_form")
-        self.template_list = getattr(self, "template_list")
-        self.record_cls = getattr(self, "record_cls")
-        self.identity = getattr(self, "identity")
+
+        assert len(self.list_columns) > 0, "No list_columns have been assigned"
+        assert self.template_form is not None
+        assert self.template_list is not None
+        assert self.record_cls is not None
+        assert self.identity is not None
+
+        #change to identity?
         self.base_url = "/{}/".format(self.__class__.__name__.lower())
 
     @classmethod
@@ -108,15 +121,35 @@ class CrudAPI(MethodView):
             session.commit()
 
 
+    def _listColumn(self, name, magic_field=False):
+        """
+            shook my head when I realized Javascripts naming convention (lowerUpperWord)
+            is spreading out
+        """
+        self.list_columns.append(name)
+        if magic_field is not False:
+            self.magic_columns[name] = magic_field
+
+
 
 
 class Equipment(CrudAPI):
 
     def populate(self):
-        self.template_form = "equipment_form.j2.html"
-        self.template_list = "equipment_list.j2.html"
+
         self.record_cls = db.Equipment
         self.identity = "equipment"
+
+        self.template_form = "equipment_form.j2.html"
+        self.template_list = "equipment_list.j2.html"
+
+        self._listColumn("id")
+        self._listColumn("hidden")
+        self._listColumn("name", magic_field="magic-string")
+        self._listColumn("pretty_name", magic_field="magic-string")
+
+
+        self.relationships = {}
 
 
 

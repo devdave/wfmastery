@@ -1,8 +1,9 @@
 <!doctype html>
 <html>
     <head>
-        {% block head %}{# seriously want to call this charlie block except I would forget why, rename it and then go "oh!" and rename it back #}
-        <title>{%block title %}Title Goes here{% endblock %}</title>
+{# seriously want to call this charlie block except I would forget why, rename it and then go "oh!" and rename it back -#}
+        {% block head %}
+        <title>{%block title %}{{origin.identity|title}}{% endblock %}</title>
         {% endblock %}
     </head>
     <body>

@@ -2,8 +2,8 @@
 
 from wfmastery import App
 from . import db
-from .crud import CrudAPI
-from wfmastery import crud
+from wfmastery.crud import CrudAPI
+
 
 from flask import render_template
 from flask import g
@@ -15,6 +15,16 @@ from flask.views import MethodView
 
 
 
+class Category(CrudAPI):
+    def populate(self):
+        self.record_cls = db.EquipmentCategory
+        self.identity = "category"
+
+        self._listColumn("id")
+        self._listColumn("display_order")
+        self._listColumn("disable")
+        self._listColumn("notes")
+
 
 
 class Equipment(CrudAPI):
@@ -25,7 +35,7 @@ class Equipment(CrudAPI):
         self.identity = "equipment"
 
         self.template_form = "equipment_form.j2.html"
-        self.template_list = "equipment_list.j2.html"
+        # self.template_list = "equipment_list.j2.html"
 
         self._listColumn("id")
         self._listColumn("hidden")
@@ -43,6 +53,7 @@ class Equipment(CrudAPI):
 
 
 Equipment.Bind(App)
+Category.Bind(App)
 
 
 

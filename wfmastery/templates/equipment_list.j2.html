@@ -180,13 +180,18 @@
 
 </style>
 
-{%- macro cell(name, value, classes=None) -%}
-    <span
-            class="{{- "cell " + classes if classes else "cell" -}}"
-            data-name="{{name}}"
-            data-value="{{value}}">
-            {{- caller() if caller else value -}}</span>
+{% macro cell(name, value, classes=None) -%}
+    <span class="{{- "cell " + classes if classes else "cell" -}}" data-name="{{name}}" data-value="{{value}}">
+    {{- caller() if caller else value -}}</span>
+{%- endmacro -%}
+
+{%- macro record_row(record, field_names) -%}
+{%-     for field_name in field_names  %}
+        {{ cell(field_name, record[field_name]) }}
+{%-     endfor -%}
+        {{ caller() if caller }}
 {%- endmacro %}
+
 
 <h1 class="banner">Equipment</h1>
 <div class="list">
@@ -209,17 +214,15 @@
         <span class="cell"></span>
     </div>
 
-
 {%-  for record in records %}
     <div class="row" data-record-id="{{record.id}}">
-{%-      for field_name in ['id', 'hidden', 'name', 'pretty_name'] %}
-        {{ cell(field_name, record[field_name]) }}
-{%-      endfor %}
-        <span class="cell">{{record.category.name}}</span>
-        <span class="cell">{{record.subcategory.name}}</span>
-        {% call cell("","") %}<a href="{{origin.base_url}}{{record.id}}">Edit</a>{% endcall %}
+{%-      call record_row(record, ['id', 'hidden', 'name', 'pretty_name']) %}
+        <span class="cell" data-record-id="{{record.category.id}}" data-name="category.name" data-value="{{record.category.name}}">{{record.category.name}}</span>
+        <span class="cell" data-record-id="{{record.subcategory.id}}" data-name="subcategory.name" data-value="{{record.subcategory.name}}">{{record.subcategory.name}}</span>
+        {% call cell("","") %}<a href="{{origin.base_url}}{{record.id}}">Edit</a>{% endcall -%}
+{% endcall %}
     </div>
-{%  endfor %}
+{%-  endfor -%}
     <div class="tail">
         <span class="cell"></span>
         <span class="cell"></span>

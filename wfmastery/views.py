@@ -160,6 +160,16 @@ class CrudAPI(MethodView):
         self.relationships.append(relationship)
 
 
+@app.template_filter("hijack")
+def hijack_thread(context, *args, **kwargs):
+    #this kills the flask
+    from dbgp.client import brk
+    brk(port=51165)
+    return ""
+
+#TODO make my own decorator for this
+hijack_thread.contextfilter = True
+
 @App.template_filter("dict2attrs")
 def dict_to_attributes(attributes, prefix=None):
     results = []
@@ -169,6 +179,7 @@ def dict_to_attributes(attributes, prefix=None):
     for key, value in attributes.items():
         results.append(format_str.format(key, value))
 
+    #TODO disable autoescape
     return " ".join(results)
 
 @App.template_filter("render_header")

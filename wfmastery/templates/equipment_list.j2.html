@@ -1,3 +1,11 @@
+{% extends "template_body.j2.html" %}
+
+{% block title%}{{origin.identity|title}} list{% endblock title%}
+{%block head %}
+{{ super() }}
+<script type="text/javascript" src="../static/utility.js"></script>
+<script type="text/javascript" src="../static/magic_columns.js"></script>
+
 <style>
 
     * {
@@ -172,55 +180,77 @@
         }
     }
 
-
-
-
-
-
-
 </style>
+{% endblock head %}
+{% macro data_attributes(data_map, prefix="data-") -%}
 
-{% macro cell(name, value, classes=None) -%}
-    <span class="{{- "cell " + classes if classes else "cell" -}}" data-name="{{name}}" data-value="{{value}}">
+    {%- for name, value in data_map.items() -%}
+    {{" "}}{{prefix}}{{name}}="{{value}}"
+    {%- endfor -%}
+{%- endmacro %}
+
+{% macro cell(name, value, classes=None, data_attrs={}) %}
+        <span class="{{- ["cell",classes]|join(" ") if classes else "cell" -}}"{{data_attributes(data_attrs)}}>
     {{- caller() if caller else value -}}</span>
 {%- endmacro -%}
 
+
 {%- macro record_row(record, field_names) -%}
-{%-     for field_name in field_names  %}
-        {{ cell(field_name, record[field_name]) }}
+{%-     for field_name in field_names  -%}
+        {{ cell(field_name, record[field_name], data_attrs=dict(name=field_name, value=record[field_name])) -}}
 {%-     endfor -%}
-        {{ caller() if caller }}
-{%- endmacro %}
+        {{ caller() if caller -}}
+{%- endmacro -%}
 
-
-<h1 class="banner">Equipment</h1>
+{%block content %}
+<h1 class="banner">{{origin.identity|title}}</h1>
 <div class="list">
     <div class="header">
-        <span class="cell">Record ID</span>
-        <span class="cell">Hidden</span>
-        <span class="cell magic-string">Name</span>
-        <span class="cell magic-string">Pretty name</span>
+{%-      for column_name in origin.list_columns -%}
+{%-          if column_name in origin.magic_columns -%}
+        {{ cell("", column_name|title, classes=origin.magic_columns[column_name]) -}}
+{%-          else -%}
+        {{ cell("", column_name|title) -}}
+{%          endif %}
+{%-      endfor %}
         <span class="cell magic-filter">Category</span>
         <span class="cell magic-filter">Subcategory</span>
         <span class="cell">Actions</span>
     </div>
     <div class="subheader">
+{%-     for column_name in origin.list_columns -%}
+        {{cell("","") -}}
+{%      endfor %}
         <span class="cell"></span>
         <span class="cell"></span>
-        <span class="cell magic-string"></span>
-        <span class="cell magic-string"></span>
-        <span class="cell magic-filter"></span>
-        <span class="cell magic-filter"></span>
         <span class="cell"></span>
     </div>
 
 {%-  for record in records %}
     <div class="row" data-record-id="{{record.id}}">
-{%-      call record_row(record, ['id', 'hidden', 'name', 'pretty_name']) %}
-        <span class="cell" data-record-id="{{record.category.id}}" data-name="category.name" data-value="{{record.category.name}}">{{record.category.name}}</span>
-        <span class="cell" data-record-id="{{record.subcategory.id}}" data-name="subcategory.name" data-value="{{record.subcategory.name}}">{{record.subcategory.name}}</span>
-        {% call cell("","") %}<a href="{{origin.base_url}}{{record.id}}">Edit</a>{% endcall -%}
-{% endcall %}
+{%-      call record_row(record, origin.list_columns) -%}
+        {{
+        cell("category.name", record.category.name,
+                data_attrs={
+                   "name":"category.name",
+                   "record-id":record.category.id,
+                   "value":record.category.name
+                }
+            )
+            -}}
+        {{ cell("subcategory.name", record.subcategory.name,
+                data_attrs={
+                    "name":"subcategory.name",
+                    "record-id":record.subcategory.id,
+                    "value":record.subcategory.name
+                }
+            )
+
+        -}}
+        {% call cell("","") %}
+            <a href="{{origin.base_url}}{{record.id}}">Edit</a>
+        {% endcall -%}
+{%      endcall %}
     </div>
 {%-  endfor -%}
     <div class="tail">
@@ -235,8 +265,6 @@
 </div>
 
 
-<script type="text/javascript" src="../static/utility.js"></script>
-<script type="text/javascript" src="../static/magic_columns.js"></script>
 <script>
 
 
@@ -284,17 +312,5 @@
 
     djw(x=>ApplyMagic(list_classes, list_element));
 
-    //var magic_map = ApplyMagic(list_classes, list_element);
-
-    //var category = new FilterColumn(
-    //        list_element,
-    //        5,
-    //        list_classes);
-    //
-    //var name_regex = new StringColumn(
-    //        list_element,
-    //        3,
-    //        list_classes
-    //)
-    //category.show_smart_box();
 </script>
+{% endblock content %}

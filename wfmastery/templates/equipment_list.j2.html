@@ -180,6 +180,14 @@
 
 </style>
 
+{%- macro cell(name, value, classes=None) -%}
+    <span
+            class="{{- "cell " + classes if classes else "cell" -}}"
+            data-name="{{name}}"
+            data-value="{{value}}">
+            {{- caller() if caller else value -}}</span>
+{%- endmacro %}
+
 <h1 class="banner">Equipment</h1>
 <div class="list">
     <div class="header">
@@ -200,17 +208,9 @@
         <span class="cell magic-filter"></span>
         <span class="cell"></span>
     </div>
-{%- macro cell(name, value) -%}
-    <span class="cell" data-name="{{name}}" data-value="{{value}}">
-{%-     if caller -%}
-        {{caller()}}
-{%-     else -%}
-        {{value}}
-{%-      endif -%}
-    </span>
-{%- endmacro %}
 
-{%  for record in records %}
+
+{%-  for record in records %}
     <div class="row" data-record-id="{{record.id}}">
 {%-      for field_name in ['id', 'hidden', 'name', 'pretty_name'] %}
         {{ cell(field_name, record[field_name]) }}
